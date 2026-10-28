@@ -11,6 +11,8 @@ interface Props {
 export default function SortActivity({ content, onComplete }: Props) {
   const [items, setItems] = useState(() => [...content.items].sort(() => Math.random() - 0.5));
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [checked, setChecked] = useState(false);
+  const correct = !content.correctOrder || items.every((item, i) => item === content.correctOrder![i]);
   const [submitted, setSubmitted] = useState(false);
 
   const moveItem = (from: number, to: number) => {
@@ -24,8 +26,8 @@ export default function SortActivity({ content, onComplete }: Props) {
 
   const handleSubmit = () => {
     haptic("medium");
-    setSubmitted(true);
-    onComplete({ orderedItems: items });
+    setChecked(true);
+    if (correct) { setSubmitted(true); onComplete({ orderedItems: items, correct }); }
   };
 
   return (
@@ -47,6 +49,7 @@ export default function SortActivity({ content, onComplete }: Props) {
           </motion.div>
         ))}
       </div>
+      {checked && !correct && <p role="status">Not quite. Compare your order with the lesson and try again.</p>}
       {!submitted && (
         <motion.button whileTap={{ scale: 0.98 }} onClick={handleSubmit}
           className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-body text-sm font-bold">

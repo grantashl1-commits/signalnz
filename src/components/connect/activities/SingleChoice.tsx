@@ -4,11 +4,13 @@ import { CheckCircle2, Circle, Sparkles } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Props {
-  content: { question: string; options: string[]; correctIndex: number | null; explanation?: string };
+  content: { question: string; options: (string | { label: string; isCorrect: boolean })[]; correctIndex?: number | null; explanation?: string };
   onComplete: (response: any) => void;
 }
 
-export default function SingleChoice({ content, onComplete }: Props) {
+export default function SingleChoice({ content: authored, onComplete }: Props) {
+  const marked = authored.options.findIndex(o => typeof o !== 'string' && o.isCorrect);
+  const content = { ...authored, options: authored.options.map(o => typeof o === 'string' ? o : o.label), correctIndex: authored.correctIndex ?? (marked >= 0 ? marked : null) };
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -21,7 +23,7 @@ export default function SingleChoice({ content, onComplete }: Props) {
   const handleReveal = () => {
     haptic("medium");
     setRevealed(true);
-    onComplete({ selectedIndex: selected, selectedOption: content.options[selected!] });
+    if (isCorrect) onComplete({ selectedIndex: selected, selectedOption: content.options[selected!], correct: true });
   };
 
   const isCorrect = content.correctIndex === null || selected === content.correctIndex;
@@ -47,7 +49,7 @@ export default function SingleChoice({ content, onComplete }: Props) {
                 : "border-border bg-card hover:border-primary/30"
             }`}
           >
-            {selected === i && revealed ? (
+            {selected === i && revealed && isCorrect ? (
               <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
             ) : (
               <Circle className={`h-5 w-5 mt-0.5 shrink-0 ${selected === i ? "text-primary" : "text-muted-foreground/40"}`} />
@@ -66,6 +68,7 @@ export default function SingleChoice({ content, onComplete }: Props) {
           Confirm
         </motion.button>
       )}
+      {revealed && !isCorrect && <div role="status" className="space-y-2"><p>Not quite. Read the explanation, then try again.</p><button className="min-h-[44px] px-4 rounded-xl border border-border" onClick={() => { setRevealed(false); setSelected(null); }}>Try again</button></div>}
       {revealed && content.explanation && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 rounded-xl bg-accent/50 border border-accent">
           <div className="flex items-center gap-2 mb-2">

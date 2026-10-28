@@ -6,8 +6,9 @@ import SignalPulse from "@/components/SignalPulse";
 import { haptic } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFeatureGate } from "@/hooks/useFeatureGate";
-import { supabase } from "@/integrations/supabase/client";
-import { loadCourseProgress, saveCourseActivity, type CourseProgressRow } from "@/lib/course-progress";
+import { captureDeviceScope } from "@/lib/device-privacy";
+import { toast } from "sonner";
+import { loadCourseProgress, saveCourseActivity, getLocalCourseProgress, hasPendingCourseProgress, COURSE_PROGRESS_EVENT, type CourseProgressRow } from "@/lib/course-progress";
 import { BABY_COURSE, TODDLER_COURSE, KIDS_TEENS_COURSE, TODDLER_SLEEP_SCHEDULES, type WeeklySchedule } from "@/data/parenting-course";
 import type { CourseModule, CourseLesson } from "@/data/connect-course";
 import LessonPlayer from "@/components/connect/LessonPlayer";
@@ -35,14 +36,14 @@ const MODULE_COLORS = [
 
 // ─── Quick Toolkit items for Kids & Teens ───
 const TOOLKIT_ITEMS = [
-  { label: "Exit Scripts", desc: "Pre-rehearsed phrases for peer pressure", moduleId: "kt-m6" },
-  { label: "Code Word System", desc: "Text PIZZA = pick me up, no questions", moduleId: "kt-m6" },
-  { label: "Calm-Down Kit", desc: "Age-appropriate regulation strategies", moduleId: "kt-m3" },
-  { label: "Family Media Agreement", desc: "Screen time contract template", moduleId: "kt-m4" },
-  { label: "Growth Mindset Poster", desc: "The 'YET' wall for the family", moduleId: "kt-m1" },
-  { label: "Friendship Audit", desc: "5 questions to assess healthy friendships", moduleId: "kt-m11" },
-  { label: "Safety Toolkit", desc: "Party safety checklist for teens", moduleId: "kt-m9" },
-  { label: "Brave Ladder", desc: "Step-by-step approach for anxiety", moduleId: "kt-m3" },
+  { label: "Exit Scripts", desc: "Practise phrases for peer pressure", moduleId: "kt-m9", lessonId: "kt-m9-l1" },
+  { label: "Party Safety Plan", desc: "Agree on check-ins and a safe way home", moduleId: "kt-m9", lessonId: "kt-m9-l8" },
+  { label: "Anxiety Tools", desc: "Practise regulation strategies together", moduleId: "kt-m3", lessonId: "kt-m3-l2" },
+  { label: "Family Media Agreement", desc: "Work on your family screen rules", moduleId: "kt-m4", lessonId: "kt-m4-l1" },
+  { label: "Growth Mindset Practice", desc: "Use the power of 'yet'", moduleId: "kt-m1", lessonId: "kt-m1-l2" },
+  { label: "Friendship Audit", desc: "Reflect on healthy friendships", moduleId: "kt-m15", lessonId: "kt-m15-l1" },
+  { label: "Safe Ride Plan", desc: "Prepare for unsafe driving pressure", moduleId: "kt-m9", lessonId: "kt-m9-l2" },
+  { label: "Brave Ladder", desc: "Take small steps into new situations", moduleId: "kt-m7", lessonId: "kt-m7-l4" },
 ];
 
 type View = "modules" | "lessons" | "lesson" | "sleep-schedule";
@@ -64,25 +65,37 @@ export default function ParentingCoursePage() {
   const currentTab = TABS.find(t => t.id === activeTab)!;
   const course = currentTab.course;
 
-  // Load progress
+  const [responses, setResponses] = useState<Record<string, any>>({});
+  const [pendingSync, setPendingSync] = useState(false);
+  const [progressLoaded, setProgressLoaded] = useState(false);
+  const [progressError, setProgressError] = useState('');
+  const [showReflections, setShowReflections] = useState(false);
+  const [initialActivityId, setInitialActivityId] = useState<string>();
+  const [resume, setResume] = useState<{ tab: TabId; module: string; lesson: string } | null>(() => {
+    try { return JSON.parse(localStorage.getItem('signal_parenting_resume') || 'null'); } catch { return null; }
+  });
   useEffect(() => {
-    if (!user) return;
-    loadCourseProgress(user.id)
-      .then((data: CourseProgressRow[]) => {
-        if (data) {
-          setCompletedActivities(new Set(data.map(r => r.activity_id)));
-          const lessonDone = new Set<string>();
-          [...BABY_COURSE, ...TODDLER_COURSE, ...KIDS_TEENS_COURSE].forEach(m =>
-            m.lessons.forEach(l => {
-              if (l.activities.every(a => data.some(r => r.activity_id === a.id && r.completed))) {
-                lessonDone.add(l.id);
-              }
-            })
-          );
-          setCompletedLessons(lessonDone);
-        }
-      });
-  }, [user]);
+    let cancelled = false;
+    const scope = captureDeviceScope();
+    const update = () => {
+      if (cancelled || !scope.valid()) return;
+      try {
+        const data = getLocalCourseProgress();
+        setCompletedActivities(new Set(data.map(r => r.activity_id)));
+        setResponses(Object.fromEntries(data.map(r => [r.activity_id, r.response])));
+        setPendingSync(hasPendingCourseProgress());
+        setCompletedLessons(new Set([...BABY_COURSE, ...TODDLER_COURSE, ...KIDS_TEENS_COURSE].flatMap(m => m.lessons.filter(l => l.activities.every(a => data.some(r => r.activity_id === a.id && r.completed))).map(l => l.id))));
+      } catch { setProgressError('Saved progress could not be opened. Please reload before continuing.'); }
+    };
+    const load = async () => {
+      try { await loadCourseProgress(user?.id); if (!cancelled && scope.valid()) { update(); setProgressLoaded(true); } }
+      catch { if (!cancelled && scope.valid()) { setProgressError('Progress could not be saved on this device. Free some storage and reload.'); setProgressLoaded(true); } }
+    };
+    update(); void load();
+    window.addEventListener(COURSE_PROGRESS_EVENT, update);
+    window.addEventListener('online', load);
+    return () => { cancelled = true; window.removeEventListener(COURSE_PROGRESS_EVENT, update); window.removeEventListener('online', load); };
+  }, [user?.id]);
 
   // Filtered modules/lessons for search
   const filteredCourse = useMemo(() => {
@@ -107,26 +120,30 @@ export default function ParentingCoursePage() {
     setView("lessons");
   };
 
-  const openLesson = (lesson: CourseLesson) => {
+  const openLesson = (lesson: CourseLesson, module = selectedModule, tab = activeTab, activityId?: string) => {
+    if (!module) return;
+    setSelectedModule(module); setActiveTab(tab); setInitialActivityId(activityId);
+    const next = { tab, module: module.id, lesson: lesson.id };
+    setResume(next);
+    try { localStorage.setItem("signal_parenting_resume", JSON.stringify(next)); } catch { toast.error("Your place could not be saved on this device."); }
     haptic("medium");
     setSelectedLesson(lesson);
     setView("lesson");
   };
 
-  // Jump to a module from toolkit
-  const jumpToModule = (moduleId: string) => {
+  const jumpToLesson = (moduleId: string, lessonId: string) => {
     const mod = course.find(m => m.id === moduleId);
-    if (mod) {
+    const lesson = mod?.lessons.find(l => l.id === lessonId);
+    if (mod && lesson) {
       setShowToolkit(false);
-      openModule(mod);
+      openLesson(lesson, mod);
     }
   };
 
   const handleSaveProgress = useCallback(async (activityId: string, response: any) => {
-    setCompletedActivities(prev => new Set(prev).add(activityId));
-    if (!user || !selectedModule || !selectedLesson) return;
+    if (!selectedModule || !selectedLesson) throw new Error("Reopen the lesson to save.");
     const activity = selectedLesson.activities.find(a => a.id === activityId);
-    await saveCourseActivity(user.id, {
+    await saveCourseActivity(user?.id, {
       module_id: selectedModule.id,
       lesson_id: selectedLesson.id,
       activity_id: activityId,
@@ -148,6 +165,9 @@ export default function ParentingCoursePage() {
     return total > 0 ? Math.round((done / total) * 100) : 0;
   };
 
+  const courseActivityIds = new Set(course.flatMap(m => m.lessons.flatMap(l => l.activities.map(a => a.id))));
+  const courseCompletedCount = [...completedActivities].filter(id => courseActivityIds.has(id)).length;
+  const reflections = course.flatMap(m => m.lessons.flatMap(l => l.activities.filter(a => a.type === 'open_response' && responses[a.id]?.text).map(a => ({ module: m, lesson: l, activity: a }))));
   const totalProgress = useMemo(() => {
     const total = course.reduce((s, m) => s + m.lessons.reduce((s2, l) => s2 + l.activities.length, 0), 0);
     const done = course.reduce((s, m) => s + m.lessons.reduce((s2, l) => s2 + l.activities.filter(a => completedActivities.has(a.id)).length, 0), 0);
@@ -183,7 +203,7 @@ export default function ParentingCoursePage() {
             <Lock className="h-10 w-10 text-muted-foreground/40 mx-auto" />
             <h2 className="font-display text-xl font-bold text-foreground">Thriving plan required</h2>
             <p className="font-body text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
-              The Parenting Guides are included with the Thriving plan. Upgrade to unlock evidence-based support for every stage from babies to teenagers.
+              The Parenting Guides are included with the Thriving plan. Upgrade to unlock practical support for every stage from babies to teenagers.
             </p>
             <a
               href="/membership"
@@ -206,11 +226,13 @@ export default function ParentingCoursePage() {
           <h1 className="font-display text-[2rem] md:text-[2.5rem] font-extrabold text-primary-foreground leading-[1.02]">
             Parenting Guides
           </h1>
-          <p className="font-body text-sm text-primary-foreground/50 mt-2">Evidence-based support for every stage</p>
+          <p className="font-body text-sm text-primary-foreground/50 mt-2">Practical support for every stage</p>
         </div>
       </AtmosphericHero>
 
       <ContentSection className="px-4 md:px-4 max-w-3xl mx-auto pb-32">
+        {progressError && <p role="alert" className="mb-4 text-destructive">{progressError}</p>}
+        {pendingSync && <p role="status" className="mb-4 text-sm text-muted-foreground">Saved on this device. Cloud sync is pending and will retry when you reconnect or reopen the course.</p>}
         {/* Tab bar */}
         <div className="flex gap-1 p-1 bg-secondary/50 rounded-xl mb-4">
           {TABS.map(tab => (
@@ -234,6 +256,16 @@ export default function ParentingCoursePage() {
           <PointPalsTab />
         )}
 
+        {activeTab !== 'behaviour' && view === 'modules' && <div className="space-y-3 mb-4">
+          {resume && <button className="min-h-[44px] w-full p-3 rounded-xl border border-primary text-left" onClick={() => {
+            const tab = TABS.find(t => t.id === resume.tab);
+            const mod = tab?.course.find((m: CourseModule) => m.id === resume.module);
+            const lesson = mod?.lessons.find((l: CourseLesson) => l.id === resume.lesson);
+            if (mod && lesson) openLesson(lesson, mod, resume.tab);
+          }}>Continue your last lesson</button>}
+          <button className="min-h-[44px] px-3 rounded-xl border border-border" onClick={() => setShowReflections(!showReflections)}>My reflections & practice ({reflections.length})</button>
+          {showReflections && <div className="space-y-3">{reflections.length === 0 && <p className="text-sm text-muted-foreground">Your saved reflections and practice check-ins will appear here.</p>}{reflections.map(({ module, lesson, activity }) => <button key={activity.id} className="w-full p-4 text-left rounded-xl border border-border" onClick={() => openLesson(lesson, module, activeTab, activity.id)}><p className="font-semibold">{activity.title}</p><p className="text-xs text-muted-foreground">{lesson.title}</p><p className="text-sm line-clamp-3 mt-2">{responses[activity.id].text}</p>{responses[activity.id].practice && <p className="text-sm mt-2">Practice: {responses[activity.id].practice.note}</p>}</button>)}</div>}
+        </div>}
         {/* Search + Toolkit bar (modules view only) */}
         {activeTab !== "behaviour" && view === "modules" && (
           <div className="flex items-center gap-2 mb-4">
@@ -287,13 +319,13 @@ export default function ParentingCoursePage() {
                 <div className="flex items-center gap-2 mb-3">
                   <Lightbulb className="h-4 w-4 text-primary" />
                   <h3 className="font-display text-sm font-bold text-foreground">Quick Toolkit</h3>
-                  <span className="text-[10px] text-muted-foreground ml-auto">Tap to jump to module</span>
+                  <span className="text-[10px] text-muted-foreground ml-auto">Tap to open the lesson</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {TOOLKIT_ITEMS.map(item => (
                     <button
                       key={item.label}
-                      onClick={() => jumpToModule(item.moduleId)}
+                      onClick={() => jumpToLesson(item.moduleId, item.lessonId)}
                       className="text-left p-3 rounded-xl bg-card border border-border hover:border-primary/30 active:scale-[0.98] transition-all"
                     >
                       <p className="font-body text-xs font-semibold text-foreground">{item.label}</p>
@@ -324,7 +356,7 @@ export default function ParentingCoursePage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-display text-sm font-bold text-foreground">Week-by-Week Sleep & Feed Guide</h3>
-                      <p className="font-body text-xs text-muted-foreground mt-1">Structured daily schedules from birth to 6 months with feed amounts</p>
+                      <p className="font-body text-xs text-muted-foreground mt-1">Example sleep and feeding routines from birth to 6 months, adapted to your baby's cues</p>
                     </div>
                     <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />
                   </div>
@@ -405,12 +437,12 @@ export default function ParentingCoursePage() {
                   <div className="flex-1">
                     <p className="font-display text-sm font-bold text-foreground">Keep going!</p>
                     <p className="font-body text-xs text-muted-foreground mt-0.5">
-                      {completedActivities.size} activities completed
+                      {courseCompletedCount} activities completed
                     </p>
                     <div className="flex items-center gap-1 mt-1.5">
                       <Sparkles className="h-3 w-3 text-amber-500" />
                       <span className="font-body text-xs font-bold text-amber-600">
-                        {completedActivities.size * 10} XP earned
+                        {courseCompletedCount * 10} XP earned
                       </span>
                     </div>
                   </div>
@@ -576,13 +608,16 @@ export default function ParentingCoursePage() {
 
           {view === "lesson" && selectedLesson && (
             <motion.div key="lesson" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <LessonPlayer
+              {!progressLoaded ? <p role="status">Loading your saved progress…</p> : progressError ? <p role="alert">Resolve the storage problem above before continuing.</p> : <LessonPlayer
+                key={selectedLesson.id + (initialActivityId ?? "")}
+                responses={responses}
+                initialActivityId={initialActivityId}
                 lesson={selectedLesson as any}
                 onComplete={handleLessonComplete}
                 onBack={() => setView("lessons")}
                 onSaveProgress={handleSaveProgress}
                   initialCompleted={completedActivities}
-              />
+              />}
             </motion.div>
           )}
         </AnimatePresence>

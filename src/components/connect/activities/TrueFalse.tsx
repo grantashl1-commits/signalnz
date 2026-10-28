@@ -4,11 +4,12 @@ import { Check, X, Sparkles } from "lucide-react";
 import { haptic } from "@/hooks/use-mobile";
 
 interface Props {
-  content: { statement: string; correctAnswer?: boolean; explanation?: string };
+  content: { statement: string; correctAnswer?: boolean; isTrue?: boolean; explanation?: string };
   onComplete: (response: any) => void;
 }
 
 export default function TrueFalse({ content, onComplete }: Props) {
+  const expected = content.correctAnswer ?? content.isTrue;
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -16,10 +17,10 @@ export default function TrueFalse({ content, onComplete }: Props) {
     haptic("medium");
     setAnswer(val);
     setRevealed(true);
-    onComplete({ answer: val, statement: content.statement });
+    if (expected === undefined || val === expected) onComplete({ answer: val, statement: content.statement, correct: expected === undefined ? null : val === expected });
   };
 
-  const isCorrect = content.correctAnswer === undefined || answer === content.correctAnswer;
+  const isCorrect = expected === undefined || answer === expected;
 
   return (
     <div className="space-y-5">
@@ -40,9 +41,10 @@ export default function TrueFalse({ content, onComplete }: Props) {
       ) : (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
           className={`p-4 rounded-xl border text-center ${isCorrect ? "bg-primary/10 border-primary/30" : "bg-destructive/10 border-destructive/30"}`}>
-          <p className="font-body text-sm font-bold">{isCorrect ? "✨ That's right!" : "Not quite!"}</p>
+          <p className="font-body text-sm font-bold">{expected === undefined ? "Response recorded" : isCorrect ? "That's right!" : "Not quite!"}</p>
         </motion.div>
       )}
+      {revealed && !isCorrect && <button className="min-h-[44px] px-4 rounded-xl border border-border" onClick={() => { setAnswer(null); setRevealed(false); }}>Try again</button>}
       {revealed && content.explanation && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 rounded-xl bg-accent/50 border border-accent">
           <div className="flex items-center gap-2 mb-2"><Sparkles className="h-4 w-4 text-primary" /><span className="font-body text-xs font-bold uppercase tracking-wider text-primary">Learn more</span></div>

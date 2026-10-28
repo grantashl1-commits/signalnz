@@ -182,6 +182,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (loading || storageError || !user) return;
     const scope = captureDeviceScope();
     const run = async () => {
+      const courses = await import('@/lib/course-progress');
+      if (!scope.matches(user.id)) return;
+      void courses.flushCourseProgress(user.id).catch(() => {});
       const training = await import('@/lib/training-path-utils');
       if (!scope.matches(user.id)) return;
       await training.hydrateSelectedPathFromProfile();

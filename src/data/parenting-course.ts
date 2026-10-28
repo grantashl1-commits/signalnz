@@ -32,25 +32,25 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
     totalNightSleep: "8–10 hours (with feeds)",
     keyNotes: [
       "Baby will only stay awake 45–60 min at a stretch",
-      "Feed on demand but aim for every 2.5–3 hours from start of feed",
-      "Breast: 20–25 min on first breast, 10–15 min on second",
-      "Bottle: 60–90ml (2–3oz) per feed for avg weight baby"
+      "Feed responsively. A sample routine must not delay a needed feed; follow your baby’s individual feeding and growth advice.",
+      "Breast: follow feeding cues and let baby finish; offer the other breast ",
+      "Bottle: follow feeding and fullness cues; discuss amounts with your health professional"
     ],
     schedule: [
-      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20–25 min first side, 10–15 min second | Bottle: 60–90ml" },
+      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "8:00–9:00 AM", activity: "Nap 1 — morning nap", feedNote: "Baby may only manage 45–60 min awake" },
-      { time: "10:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20–25 min first side, 10–15 min second | Bottle: 60–90ml" },
+      { time: "10:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "11:00–11:45 AM", activity: "Nap 2 — short sleep" },
-      { time: "12:00 PM", activity: "Feed", feedNote: "Breast: 20–25 min | Bottle: 60–90ml" },
+      { time: "12:00 PM", activity: "Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "12:30–2:30 PM", activity: "Nap 3 — long midday nap" },
-      { time: "2:30 PM", activity: "Wake & Feed", feedNote: "Breast: 20 min each side | Bottle: 60–90ml" },
+      { time: "2:30 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "3:30–5:00 PM", activity: "Nap 4 — afternoon nap" },
-      { time: "5:00 PM", activity: "Wake & Feed", feedNote: "Breast: 15–20 min each side | Bottle: 60–90ml" },
+      { time: "5:00 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "5:45 PM", activity: "Bath time — calm, warm, short (5–10 min)" },
-      { time: "6:15 PM", activity: "Feed & settle", feedNote: "Top-up feed — Breast: 10–15 min | Bottle: 30–60ml" },
+      { time: "6:15 PM", activity: "Feed & settle", feedNote: "Top-up feed — Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "6:30–7:00 PM", activity: "Bedtime — dark room, swaddle" },
-      { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 60–90ml — keep lights dim" },
-      { time: "2:00–3:00 AM", activity: "Night feed", feedNote: "Breast: both sides | Bottle: 60–90ml — minimal stimulation" },
+      { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "2:00–3:00 AM", activity: "Night feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
     ],
     sleepScience: "Newborns spend 50% of sleep in REM (active sleep) vs 20% in adults. Sleep cycles are only 40–45 minutes long, meaning they may wake every 20–45 minutes. This is biologically protective and completely normal.",
     gentleTips: [
@@ -68,24 +68,24 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
     keyNotes: [
       "Baby can stay awake 1–1.5 hours between naps",
       "Start distinguishing day from night — bright during day, dim at night",
-      "Breast: 20–25 min on fuller breast, 10–15 min second",
-      "Bottle: 90–120ml (3–4oz) per feed"
+      "Breast: follow feeding cues and let baby finish; offer the other breast ",
+      "Bottle: follow feeding and fullness cues; discuss amounts with your health professional"
     ],
     schedule: [
-      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: 25 min + 15 min | Bottle: 90–120ml" },
+      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "8:30–9:45 AM", activity: "Nap 1 — morning nap (max 75 min)" },
-      { time: "10:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 90–120ml" },
+      { time: "10:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "11:30 AM–12:00 PM", activity: "Nap 2 — short bridge nap (30 min)" },
-      { time: "12:00 PM", activity: "Feed (if needed)", feedNote: "Breast: 15 min | Bottle: 60ml top-up" },
+      { time: "12:00 PM", activity: "Feed (if needed)", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "12:30–2:30 PM", activity: "Nap 3 — main midday nap (up to 2 hrs)" },
-      { time: "2:30 PM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 15 min | Bottle: 120ml" },
+      { time: "2:30 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "4:00–5:00 PM", activity: "Nap 4 — late afternoon catnap" },
-      { time: "5:00 PM", activity: "Wake & Feed (split feed part 1)", feedNote: "Breast: 15 min each | Bottle: 90ml" },
+      { time: "5:00 PM", activity: "Wake & Feed (split feed part 1)", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "5:45 PM", activity: "Bath — relaxing routine" },
-      { time: "6:15 PM", activity: "Feed (split feed part 2) & settle", feedNote: "Breast: top-up 10 min | Bottle: 60ml" },
+      { time: "6:15 PM", activity: "Feed (split feed part 2) & settle", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "6:30–7:00 PM", activity: "Bedtime" },
-      { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 120ml" },
-      { time: "2:30–3:30 AM", activity: "Night feed (may push later)", feedNote: "Breast: both sides | Bottle: 90–120ml" },
+      { time: "10:00–10:30 PM", activity: "Dream feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "2:30–3:30 AM", activity: "Night feed (may push later)", feedNote: "Breast: both sides | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
     ],
     sleepScience: "Your baby's sleep cycles are still ~40 minutes. They begin each cycle in light REM sleep — easily woken for the first 20 minutes. The 'danger zone' between cycles is where most wakings happen.",
     gentleTips: [
@@ -104,22 +104,22 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       "Baby may start sleeping one 4–5 hour stretch at night",
       "Awake windows extend to 1.5–2 hours",
       "Breast: ensure baby empties first breast before switching",
-      "Bottle: 120–150ml (4–5oz) per feed"
+      "Bottle: follow feeding and fullness cues; discuss amounts with your health professional"
     ],
     schedule: [
-      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20–25 min + 10–15 min | Bottle: 120–150ml" },
+      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "8:45–9:45 AM", activity: "Nap 1 (max 60 min)" },
-      { time: "10:00 AM", activity: "Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 120–150ml" },
-      { time: "11:45 AM", activity: "Small top-up if needed", feedNote: "Breast: 10 min | Bottle: 30–60ml" },
+      { time: "10:00 AM", activity: "Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "11:45 AM", activity: "Small top-up if needed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "12:00–2:00 PM", activity: "Nap 2 — main midday nap (2 hrs)" },
-      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 15 min | Bottle: 150ml" },
+      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "4:00–4:30 PM", activity: "Nap 3 — short catnap (30 min max)" },
-      { time: "5:00 PM", activity: "Feed (split 1)", feedNote: "Breast: 15 min each | Bottle: 90ml" },
+      { time: "5:00 PM", activity: "Feed (split 1)", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "5:45 PM", activity: "Bath" },
-      { time: "6:15 PM", activity: "Feed (split 2) & settle", feedNote: "Breast: top-up | Bottle: 60ml" },
+      { time: "6:15 PM", activity: "Feed (split 2) & settle", feedNote: "Breast: top-up | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "7:00 PM", activity: "Bedtime" },
-      { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 120–150ml" },
-      { time: "3:00–4:00 AM", activity: "Night feed (dropping naturally)", feedNote: "Breast: one side may suffice | Bottle: 90–120ml" },
+      { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "3:00–4:00 AM", activity: "Night feed (dropping naturally)", feedNote: "Breast: one side may suffice | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
     ],
     sleepScience: "Around 4-6 weeks, the circadian rhythm begins developing. Your baby's body starts producing melatonin in response to darkness. Sleep cycles are still ~45 minutes but stretches of 4-5 hours at night become possible.",
     gentleTips: [
@@ -138,21 +138,21 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       "Many babies start sleeping 5–6 hour stretches",
       "Awake windows around 1.5–2 hours",
       "This is when sleep cycles start maturing — 40 min cycles emerge",
-      "Bottle: 150–180ml (5–6oz) per feed"
+      "Bottle: follow feeding and fullness cues; discuss amounts with your health professional"
     ],
     schedule: [
-      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 150–180ml" },
+      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "9:00–9:45 AM", activity: "Nap 1 (45–60 min)" },
-      { time: "10:00 AM", activity: "Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 150–180ml" },
+      { time: "10:00 AM", activity: "Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "12:00–2:00 PM", activity: "Nap 2 — main nap (up to 2 hrs)" },
-      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 15 min | Bottle: 150–180ml" },
+      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "4:00–4:30 PM", activity: "Nap 3 — catnap (15–30 min)" },
-      { time: "5:00 PM", activity: "Feed (split 1)", feedNote: "Breast: 15 min each | Bottle: 120ml" },
+      { time: "5:00 PM", activity: "Feed (split 1)", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "5:45 PM", activity: "Bath" },
       { time: "6:15 PM", activity: "Feed (split 2) & settle", feedNote: "Top-up to ensure full tummy" },
       { time: "7:00 PM", activity: "Bedtime" },
-      { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: 20 min | Bottle: 150ml" },
-      { time: "3:00–5:00 AM", activity: "Night feed (may drop entirely soon)", feedNote: "Breast: one side | Bottle: 90–120ml" },
+      { time: "10:30 PM", activity: "Dream feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "3:00–5:00 AM", activity: "Night feed (may drop entirely soon)", feedNote: "Breast: one side | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
     ],
     sleepScience: "Between 6-8 weeks, many babies start sleeping one 5-6 hour stretch. Their 40-minute sleep cycles start maturing, and they spend slightly less time in easily-woken REM sleep (dropping from 50% to ~40%).",
     gentleTips: [
@@ -171,20 +171,20 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       "Some babies drop the night feed entirely",
       "Awake windows 1.5–2 hours",
       "Afternoon catnap may start dropping",
-      "Bottle: 180–210ml (6–7oz) per feed"
+      "Bottle: follow feeding and fullness cues; discuss amounts with your health professional"
     ],
     schedule: [
-      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 180–210ml" },
+      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "9:00–9:45 AM", activity: "Nap 1 (45 min)" },
-      { time: "10:30 AM", activity: "Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 180–210ml" },
+      { time: "10:30 AM", activity: "Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "12:00–2:00 PM", activity: "Nap 2 — main nap (2 hrs)" },
-      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 180–210ml" },
+      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "4:15–4:30 PM", activity: "Nap 3 — power nap (15 min, dropping soon)" },
-      { time: "5:00 PM", activity: "Feed", feedNote: "Breast: 15 min each | Bottle: 150ml" },
+      { time: "5:00 PM", activity: "Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "5:45 PM", activity: "Bath" },
-      { time: "6:15 PM", activity: "Top-up feed & settle", feedNote: "Breast: 10 min | Bottle: 60ml" },
+      { time: "6:15 PM", activity: "Top-up feed & settle", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "7:00 PM", activity: "Bedtime" },
-      { time: "10:30 PM", activity: "Dream feed (can start dropping at 12 wks)", feedNote: "Breast: 15 min | Bottle: 120–150ml" },
+      { time: "10:30 PM", activity: "Dream feed (can start dropping at 12 wks)", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
     ],
     sleepScience: "By 8-12 weeks, the circadian rhythm is well-established. Melatonin production kicks in at dusk. Sleep cycles begin lengthening toward 50 minutes. Some babies drop the night feed entirely — but many don't until 4-6 months. Both are normal.",
     gentleTips: [
@@ -203,18 +203,18 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       "4-month sleep regression may occur — stay consistent",
       "Awake windows extend to 2–2.5 hours",
       "Afternoon catnap usually dropped",
-      "Bottle: 180–240ml (6–8oz) per feed, 4–5 feeds/day"
+      "Bottle: follow feeding and fullness cues; discuss amounts with your health professional"
     ],
     schedule: [
-      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 210–240ml" },
+      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "9:15–10:00 AM", activity: "Nap 1 (45 min)" },
-      { time: "10:30 AM", activity: "Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 210–240ml" },
+      { time: "10:30 AM", activity: "Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "12:00–2:00 PM", activity: "Nap 2 — main nap (up to 2 hrs)" },
-      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 210–240ml" },
-      { time: "5:00 PM", activity: "Feed & bath routine", feedNote: "Breast: 15 min each | Bottle: 180ml" },
-      { time: "6:30 PM", activity: "Top-up & settle", feedNote: "Breast: 10 min | Bottle: 60ml" },
+      { time: "2:00 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "5:00 PM", activity: "Feed & bath routine", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "6:30 PM", activity: "Top-up & settle", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "7:00 PM", activity: "Bedtime" },
-      { time: "10:30 PM", activity: "Dream feed (optional — try dropping)", feedNote: "Breast: 15 min | Bottle: 120ml" },
+      { time: "10:30 PM", activity: "Dream feed (optional — try dropping)", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
     ],
     sleepScience: "The 4-month sleep regression is real — your baby's sleep architecture is permanently reorganising from newborn patterns to adult-like cycles. They now cycle through light and deep sleep stages like adults, which means MORE brief wakings between cycles. This isn't a setback, it's brain maturation.",
     gentleTips: [
@@ -233,21 +233,21 @@ export const BABY_SLEEP_SCHEDULES: WeeklySchedule[] = [
       "Solids may be introduced around 6 months (talk to your GP/paediatrician)",
       "Awake windows 2–2.5 hours",
       "Dream feed can be dropped if sleeping through",
-      "Bottle: 210–240ml (7–8oz) per feed, 4 feeds/day"
+      "Bottle: follow feeding and fullness cues; discuss amounts with your health professional"
     ],
     schedule: [
-      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 210–240ml" },
+      { time: "7:00 AM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "9:30–10:00 AM", activity: "Nap 1 (30–45 min)" },
-      { time: "10:30 AM", activity: "Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 210–240ml" },
+      { time: "10:30 AM", activity: "Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "12:15–2:15 PM", activity: "Nap 2 — main nap (2 hrs)" },
-      { time: "2:15 PM", activity: "Wake & Feed", feedNote: "Breast: 20 min + 10 min | Bottle: 210–240ml" },
-      { time: "5:00 PM", activity: "Feed, bath, bedtime routine", feedNote: "Breast: 15 min each | Bottle: 180–210ml" },
+      { time: "2:15 PM", activity: "Wake & Feed", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
+      { time: "5:00 PM", activity: "Feed, bath, bedtime routine", feedNote: "Breast: follow feeding cues and let baby finish; offer the other breast | Bottle: follow feeding and fullness cues; discuss amounts with your health professional" },
       { time: "6:45 PM", activity: "Top-up & settle" },
       { time: "7:00 PM", activity: "Bedtime" },
     ],
-    sleepScience: "By 4-6 months, REM drops to ~35% and sleep cycles extend to ~50 minutes. Your baby's body clock is now comparable to an adult's. They may still wake 10-15 times between cycles each night — but most can resettle without help if conditions are right.",
+    sleepScience: "Sleep patterns continue changing in early infancy. Some babies settle between cycles; others need feeding or comfort. There is no single normal timetable.",
     gentleTips: [
-      { title: "Solids & Sleep", body: "Starting solids around 6 months can help sleep — but don't introduce them purely for that reason. Follow your baby's readiness signs. If milk intake drops too much during the day due to solids, night wakings may actually INCREASE." },
+      { title: "Solids & Sleep", body: "Introduce complementary foods when your baby is developmentally ready, usually around six months, rather than to change sleep. Continue milk feeds and ask your Well Child provider for feeding guidance." },
       { title: "Separation Awareness Begins", body: "Around 6 months, babies develop object permanence — they know you exist even when you leave the room. This can cause bedtime protests and night wakings. Gentle reassurance (voice from the doorway, brief visits) teaches them you always come back." },
       { title: "Creating Sleep Independence (Gently)", body: "This is an ideal window to establish independent settling — if your baby is ready. Try a gradual approach: sit beside the cot tonight, move the chair slightly further away each night over 1-2 weeks. No crying it out needed." },
     ],
@@ -409,7 +409,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "Why They Flip Their Lid", body: "When your toddler is overwhelmed, the 'staircase' connecting upstairs and downstairs disconnects. They literally cannot access rational thinking. This isn't defiance — it's biology. Your job isn't to reason with them in that moment, it's to help them feel safe so the staircase reconnects." },
             { heading: "You Are the External Regulator", body: "Until their upstairs brain matures, YOU are their regulation system. When you stay calm during their storm, you're teaching their nervous system what calm feels like. This is called co-regulation, and it's the single most powerful parenting tool you have." },
           ]}},
-          { id: "t-m1-l1-a2", type: "single_choice" as any, title: "Check Your Understanding", content: { question: "When your toddler is mid-meltdown, why doesn't reasoning work?", options: [
+          { id: "t-m1-l1-a2-v2", type: "single_choice" as any, title: "Check Your Understanding", content: { question: "When your toddler is mid-meltdown, why doesn't reasoning work?", options: [
             { label: "They're choosing not to listen", isCorrect: false },
             { label: "Their rational brain is temporarily offline", isCorrect: true },
             { label: "They haven't learned words yet", isCorrect: false },
@@ -440,7 +440,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "Repair Matters More Than Perfection", body: "You don't need to get it right every time. Research shows what matters most is 'rupture and repair'. When you lose your temper (and you will), coming back to your child, acknowledging what happened, and reconnecting is what builds resilience." },
             { heading: "Connection Before Correction", body: "Before any boundary-setting or teaching moment can land, your toddler needs to feel connected to you. A child who feels disconnected will fight harder, cling more, or shut down. Connect first, then redirect." },
           ]}},
-          { id: "t-m1-l2-a2", type: "true_false" as any, title: "Myth vs Reality", content: { statement: "Picking up a crying toddler every time will 'spoil' them and make them more clingy.", isTrue: false, explanation: "Research consistently shows the opposite — responding to your child's distress builds security, which actually leads to MORE independence over time, not less." }},
+          { id: "t-m1-l2-a2-v2", type: "true_false" as any, title: "Myth vs Reality", content: { statement: "Picking up a crying toddler every time will 'spoil' them and make them more clingy.", isTrue: false, explanation: "Research consistently shows the opposite — responding to your child's distress builds security, which actually leads to MORE independence over time, not less." }},
         ]
       }
     ]
@@ -496,7 +496,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "C — Contain", body: "Create safety: 'I'm going to stay right here with you.' If they're hitting, gently hold their hands: 'I won't let you hit. I'll keep us both safe.' You're the container for feelings that are too big for their small body." },
             { heading: "E — Explore (After)", body: "Once they're calm (not during!): 'You were really upset about leaving. What could we do differently next time?' This is where the learning happens — but ONLY when the emotional brain has settled." },
           ]}},
-          { id: "t-m2-l2-a2", type: "single_choice" as any, title: "Practice Scenario", content: { question: "Your 2-year-old throws their plate on the floor because you cut their toast 'wrong'. What's your first move?", options: [
+          { id: "t-m2-l2-a2-v2", type: "single_choice" as any, title: "Practice Scenario", content: { question: "Your 2-year-old throws their plate on the floor because you cut their toast 'wrong'. What's your first move?", options: [
             { label: "Say 'We don't throw food!' firmly", isCorrect: false },
             { label: "Acknowledge: 'Oh no! You wanted your toast different. That's frustrating.'", isCorrect: true },
             { label: "Ignore the behaviour completely", isCorrect: false },
@@ -550,7 +550,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { front: "Intermittent Reinforcement", back: "Giving in sometimes (but not always) actually creates MORE persistent behaviour than never giving in. This is the slot machine principle — unpredictability keeps the child trying harder, not less.", emoji: "🎰", tag: "Psychology" },
             { front: "Consistency = Kindness", back: "When boundaries shift based on your mood or their crying, children learn that pushing harder works. Consistent limits (even when inconvenient) teach that the world is predictable and safe — a gift worth the short-term discomfort.", emoji: "📏", tag: "Consistency" },
           ] } },
-          { id: "t-m3-l1-a3", type: "true_false" as any, title: "Quick Check", content: { statement: "Giving in to a tantrum 'just this once' doesn't affect future behaviour.", isTrue: false, explanation: "Intermittent reinforcement (sometimes giving in) actually creates MORE persistent behaviour than never giving in. It's the same principle behind slot machines — the unpredictability keeps you pulling the lever." }},
+          { id: "t-m3-l1-a3-v2", type: "true_false" as any, title: "Quick Check", content: { statement: "Giving in to a tantrum 'just this once' doesn't affect future behaviour.", isTrue: false, explanation: "Intermittent reinforcement (sometimes giving in) actually creates MORE persistent behaviour than never giving in. It's the same principle behind slot machines — the unpredictability keeps you pulling the lever." }},
           { id: "t-m3-l1-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of loving, consistent boundaries before moving on.", content: { intro: "Let's check your understanding of how to hold boundaries warmly and effectively.", passMark: 3, questions: [
             { question: "What does the 'fence analogy' illustrate about boundaries?", options: ["Strict rules confine children and reduce creativity", "Boundaries function like a fence — creating a safe space within which children can freely explore", "Toddlers should be free to determine their own limits", "Limits should only be set for safety issues, not behaviour"], correct: 1, explanation: "The fence analogy: children without clear limits cluster in the middle of the playground, afraid to explore. With a clear boundary (the fence), they run freely. Limits create the safety that enables full exploration." },
             { question: "Why does occasionally giving in to a tantrum create more persistent behaviour?", options: ["It rewards good behaviour, which encourages more tantrums", "Intermittent reinforcement (sometimes yes, sometimes no) is more motivating than a consistent no", "Children learn that parents don't mean what they say", "It makes children feel more secure and therefore cry more"], correct: 1, explanation: "Intermittent reinforcement (the same principle behind slot machines) makes behaviour more persistent, not less. When giving in happens occasionally, children push harder because they've learned that persistence sometimes pays off." },
@@ -569,7 +569,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "Logical Consequences", body: "When natural consequences aren't safe/appropriate, create related ones: Throwing toys → toys go away for a bit. Drawing on walls → helping to clean. Running in the car park → must hold hands. Key: the consequence should RELATE to the behaviour." },
             { heading: "What Doesn't Work", body: "Unrelated punishments ('No TV because you hit your sister') don't teach the lesson. They just breed resentment. The consequence should help them understand the impact of their choice, not simply feel bad." },
           ]}},
-          { id: "t-m3-l2-a2", type: "single_choice" as any, title: "Scenario Practice", content: { question: "Your 3-year-old keeps throwing sand at other children at the playground. What's the best logical consequence?", options: [
+          { id: "t-m3-l2-a2-v2", type: "single_choice" as any, title: "Scenario Practice", content: { question: "Your 3-year-old keeps throwing sand at other children at the playground. What's the best logical consequence?", options: [
             { label: "No dessert tonight", isCorrect: false },
             { label: "Leave the playground after a clear warning", isCorrect: true },
             { label: "Time-out on the bench for 3 minutes", isCorrect: false },
@@ -642,7 +642,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "Setting Up for Success", body: "• Let them help choose bedding (builds ownership)\n• Keep the same bedtime routine\n• Use a toddler bed rail if needed\n• Place the bed in the same position as the cot\n• Make a big deal of their 'big kid' achievement" },
             { heading: "When They Keep Getting Out", body: "Stay boring. Walk them back calmly, say 'It's bedtime,' and leave. No negotiation, no cuddles, no anger. The first 3 nights are the hardest. If you stay consistent, most children adjust within a week. You may need to walk them back 30+ times the first night — that's normal!" },
           ]}},
-          { id: "t-m4-l3-a2", type: "true_false" as any, title: "Check", content: { statement: "You should transition your toddler to a big bed as soon as they turn 2.", isTrue: false, explanation: "There's no magic age. Most sleep experts recommend waiting until 2.5–3 unless safety requires it sooner (e.g., climbing out of the cot). Early transitions often create more sleep problems." }},
+          { id: "t-m4-l3-a2-v2", type: "true_false" as any, title: "Check", content: { statement: "You should transition your toddler to a big bed as soon as they turn 2.", isTrue: false, explanation: "There's no magic age. Most sleep experts recommend waiting until 2.5–3 unless safety requires it sooner (e.g., climbing out of the cot). Early transitions often create more sleep problems." }},
         ]
       }
     ]
@@ -697,7 +697,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "The 'Safe Food' Strategy", body: "Always include at least ONE food you know they'll eat at every meal. This prevents the meal becoming a power struggle and ensures they won't go hungry while being exposed to new foods alongside their safe option." },
             { heading: "Get Them Involved", body: "Children who help choose, shop for, and prepare food are significantly more likely to eat it. Even toddlers can wash vegetables, tear lettuce, stir ingredients. Ownership creates curiosity." },
           ]}},
-          { id: "t-m5-l2-a2", type: "single_choice" as any, title: "What Would You Do?", content: { question: "Your toddler refuses dinner and asks for a biscuit instead. Best approach?", options: [
+          { id: "t-m5-l2-a2-v2", type: "single_choice" as any, title: "What Would You Do?", content: { question: "Your toddler refuses dinner and asks for a biscuit instead. Best approach?", options: [
             { label: "'No biscuit until you eat your vegetables'", isCorrect: false },
             { label: "Give them the biscuit to avoid conflict", isCorrect: false },
             { label: "'Dinner is what we're having now. Your tummy might be hungry later — that's okay.'", isCorrect: true },
@@ -757,7 +757,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "Car Seat PREP", body: "\u2018You\u2019re going to put one arm in, then the other. Then I\u2019ll buckle in the middle. Can you show your toy puppy how car seats work? Puppy doesn\u2019t know!\u2019 Making them the \u2018teacher\u2019 gives them agency and distracts from resistance." },
             { heading: "Playdate Ending PREP", body: "\u2018In 15 minutes, your friend\u2019s mummy will come to pick him up. We\u2019ll gather up all his things and then say bye bye. Should we bring our dog out with us to wave goodbye?\u2019 Involving them in the \u2018closing ceremony\u2019 helps them process the ending." },
           ]}},
-          { id: "t-m6-l2-a2", type: "single_choice" as any, title: "PREP Practice", content: { question: "You need to leave for school in 10 minutes and your toddler is deep in play. What\u2019s the best PREP approach?", options: [
+          { id: "t-m6-l2-a2-v2", type: "single_choice" as any, title: "PREP Practice", content: { question: "You need to leave for school in 10 minutes and your toddler is deep in play. What\u2019s the best PREP approach?", options: [
             { label: "Just pick them up and go when it\u2019s time", isCorrect: false },
             { label: "Give a warning, explain what\u2019s next, offer a choice about what to bring", isCorrect: true },
             { label: "Wait until they finish playing naturally", isCorrect: false },
@@ -914,7 +914,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { heading: "The Restart Protocol", body: "At any \u2018restart\u2019 level:\n1. Say: \u2018I need a moment.\u2019 Walk away (ensure children are safe).\n2. Physical reset: cold water on wrists, step outside, 10 deep breaths.\n3. Self-talk: \u2018I\u2019m a good parent having a hard moment.\u2019\n4. Return when your heart rate has slowed." },
             { heading: "Repair, Don\u2019t Shame-Spiral", body: "Rather than beating yourself up, use these moments to model emotional recovery for your children:\n\u2018I yelled and that wasn\u2019t okay. Even grown-ups have big feelings sometimes. I\u2019m working on handling mine better. I love you.\u2019\n\nThis teaches them that mistakes don\u2019t define us \u2014 repair does." },
           ]}},
-          { id: "t-m9-l2-a2", type: "true_false" as any, title: "Reality Check", content: { statement: "Yelling at your toddler occasionally means you\u2019re a bad parent.", isTrue: false, explanation: "Every parent loses their cool sometimes. What matters is what you do AFTER. Repair \u2014 acknowledging the rupture and reconnecting \u2014 actually builds resilience in your child and models healthy emotional processing." }},
+          { id: "t-m9-l2-a2-v2", type: "true_false" as any, title: "Reality Check", content: { statement: "Yelling at your toddler occasionally means you\u2019re a bad parent.", isTrue: false, explanation: "Every parent loses their cool sometimes. What matters is what you do AFTER. Repair \u2014 acknowledging the rupture and reconnecting \u2014 actually builds resilience in your child and models healthy emotional processing." }},
         ]
       }
     ]
@@ -988,7 +988,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { question: "When a toddler drops their nap, what bedtime adjustment helps prevent overtiredness?", options: ["Move bedtime 1–2 hours later to tire them out more", "Keep bedtime exactly the same as before", "Move bedtime 30–60 minutes earlier temporarily", "Skip bedtime routine on non-nap days"], correct: 2, explanation: "Without the nap's restorative sleep, toddlers accumulate sleep pressure faster. Temporarily moving bedtime earlier (30–60 minutes) prevents overtiredness — which paradoxically makes toddlers harder to settle. After 2–3 weeks, gradually shift back." },
             { question: "What is 'quiet rest time' and why is it used?", options: ["Forced nap time where the child must sleep", "A designated period in the child's room with quiet activities — maintaining the rest rhythm without requiring sleep", "Sitting still at the dinner table", "TV time to wind down"], correct: 1, explanation: "Quiet rest time (30–60 minutes with books, puzzles, or soft toys in their room) replaces the nap's structure without requiring sleep. It gives both child and parent a restorative break and helps prevent afternoon overtiredness during the transition period." },
           ] } },
-          { id: "t-m10-l2-a4", type: "true_false" as any, title: "Nap Check", content: { statement: "Most children should stop napping by age 2.", isTrue: false, explanation: "Most children still benefit from naps until age 3\u20135. Dropping too early often leads to overtiredness and worse behaviour. Look for consistent signs over several weeks before making the change." }},
+          { id: "t-m10-l2-a4-v2", type: "true_false" as any, title: "Nap Check", content: { statement: "Most children should stop napping by age 2.", isTrue: false, explanation: "Most children still benefit from naps until age 3\u20135. Dropping too early often leads to overtiredness and worse behaviour. Look for consistent signs over several weeks before making the change." }},
         ]
       },
       {
@@ -1093,7 +1093,28 @@ export const TODDLER_COURSE: CourseModule[] = [
             { question: "What is the best approach when two toddlers want the same toy?", options: ["Take the toy away so neither child gets it", "Give it to the younger/more upset child", "Teach turn-taking: 'When you're finished, then it's their turn' — protecting each child's right to finish", "Insist the child shares immediately"], correct: 2, explanation: "Turn-taking respects each child's rights while teaching delayed gratification — a crucial skill. 'When you're done, then it's their turn' communicates: you will get your turn, and your turn will come to an end too." },
             { question: "How do children best learn to be genuinely generous?", options: ["Through consistent forced sharing", "By being rewarded for sharing", "By watching adults model generosity voluntarily in everyday life", "By being told sharing is important"], correct: 2, explanation: "Children learn generosity through observation — watching adults voluntarily share, offer, and give. Modelling 'I'd like to share some of my...' creates an internal template for generosity that children naturally replicate over time." },
           ] } },
-          { id: "t-m11-l2-a4", type: "decision_point" as any, title: "What Would You Do?", content: { scenario: "Your child is having a full meltdown in the supermarket because you said no to a toy. Other shoppers are staring. What do you do?", options: [{ label: "Get down to their level and validate: 'You really wanted that toy. It's hard when we can't have something we want.'", outcome: "Validating the emotion doesn't mean giving in. Your child feels heard, and the intensity often drops. You can then offer a choice: 'Would you like to help me pick the apples or the bananas?'" }, { label: "Firmly say 'Stop it — you're embarrassing yourself' and keep walking", outcome: "Shaming during a meltdown escalates it. Your child can't access rational thinking during emotional flooding. They need co-regulation first, boundaries second." }, { label: "Give in and buy the toy to stop the scene", outcome: "This teaches: meltdowns = getting what I want. Short-term peace, long-term pattern. The next meltdown will be bigger." }] }},
+          {
+  "id": "t-m11-l2-a4-v2",
+  "type": "decision_point",
+  "title": "Waiting for a Turn",
+  "content": {
+    "scenario": "Your toddler grabs a truck that another child is using. Both children are upset. What would you do?",
+    "options": [
+      {
+        "label": "Gently stop the grabbing: \"You want the truck. Sam is using it. Let us ask for a turn when Sam is finished. We can choose another toy while we wait.\"",
+        "outcome": "Protect the current turn, name the feeling and help with waiting. Stay close and support both children rather than demanding instant sharing."
+      },
+      {
+        "label": "Make the other child hand it over immediately.",
+        "outcome": "Forced sharing does not teach waiting or respect for someone else's turn. Help your child practise asking and coping with not yet."
+      },
+      {
+        "label": "Tell your child they are selfish.",
+        "outcome": "A toddler is still learning impulse control and turn-taking. Describe the action and guide them without labelling their character."
+      }
+    ]
+  }
+},
         ]
       }
     ]
@@ -1175,7 +1196,7 @@ export const TODDLER_COURSE: CourseModule[] = [
             { question: "A 2-year-old who cannot consistently understand 'no, don't touch that' is:", options: ["Deliberately defiant and needs firmer consequences", "Developmentally normal — impulse control is still being built", "Behind in development", "Being manipulative"], correct: 1, explanation: "At ages 1–2, the prefrontal cortex — the brain's impulse control centre — is in very early development. Children literally cannot consistently resist impulses yet. Understanding this reduces frustration and prevents ineffective or harsh responses to normal developmental behaviour." },
             { question: "Tantrums are considered developmentally normal until approximately what age?", options: ["18 months", "2 years", "3.5–4 years (when self-control begins consistently developing)", "5–6 years"], correct: 2, explanation: "Tantrums are a normal expression of emotional overwhelm when self-regulation skills are still developing. Self-control begins to reliably emerge around 3.5–4 years old, but even then it requires years of practice and support." },
           ] } },
-          { id: "t-m13-l1-a4", type: "true_false" as any, title: "Reality Check", content: { statement: "A typical 2-year-old should be able to sit still at the dinner table for 10 minutes.", isTrue: false, explanation: "A 2-year-old can realistically sit for only 1\u20133 minutes. Having overly high expectations leads to unnecessary power struggles." }},
+          { id: "t-m13-l1-a4-v2", type: "true_false" as any, title: "Reality Check", content: { statement: "A typical 2-year-old should be able to sit still at the dinner table for 10 minutes.", isTrue: false, explanation: "A 2-year-old can realistically sit for only 1\u20133 minutes. Having overly high expectations leads to unnecessary power struggles." }},
         ]
       },
       {
@@ -1279,16 +1300,16 @@ export const BABY_COURSE: CourseModule[] = [
           ] } },
           { id: "b-m1-l1-a1", type: "info_carousel" as any, title: "Sleep Science 101", content: { slides: [
             { heading: "Active vs Quiet Sleep", body: "Newborns enter active (REM) sleep first — you'll see twitching, eye movement, irregular breathing. This is normal! They spend 50% of sleep in this light phase. Deep (quiet) sleep develops over the first 3 months. Don't assume twitching means they're waking up — wait before intervening." },
-            { heading: "The 40-Minute Cycle", body: "Baby sleep cycles are about 40 minutes (adults: 90 min). Between cycles, babies naturally surface to light sleep. If they can self-settle, they link cycles. If they've been rocked/fed to sleep, they need that again at each cycle transition. This is why self-settling matters." },
-            { heading: "When Can They Sleep Through?", body: "Most healthy, full-term babies at a good weight can do one 4–5 hour stretch by 4–6 weeks, and sleep 10–12 hours (with a dream feed) by 3–4 months. But EVERY baby is different. Focus on foundations, not timelines." },
+            { heading: "The 40-Minute Cycle", body: "Young babies often wake between short sleep cycles. They may need a feed, comfort or help to settle again. Feeding, cuddling or rocking to sleep can be normal responsive care; independent settling develops differently for each baby." },
+            { heading: "When Can They Sleep Through?", body: "Sleep patterns vary widely. Many young babies wake for feeds and need help settling. Longer stretches develop at different ages; do not delay a needed feed to meet a sleep target. Ask your midwife or Well Child provider about individual feeding and growth needs." },
           ]}},
           { id: "b-m1-l1-a2", type: "flip_card" as any, title: "Sleep Science Key Concepts", instruction: "Flip each card to reveal what each term really means for your baby's sleep.", content: { cards: [
             { front: "REM Sleep", back: "Active, light sleep where twitching and eye movement happen. Newborns spend 50% of sleep here — this is normal and protective, not a sign of poor sleep.", emoji: "👁️", tag: "Sleep Science" },
-            { front: "Sleep Cycle", back: "Newborn sleep cycles are only 40 minutes long (vs 90 min for adults). Between cycles, babies naturally surface — whether they resettle depends on how they fell asleep.", emoji: "🔄", tag: "Cycles" },
-            { front: "Self-Settling", back: "The ability to fall back to sleep between sleep cycles without parental help. Babies learn this best when put down drowsy-but-awake rather than fully asleep.", emoji: "😴", tag: "Self-Settling" },
+            { front: "Sleep Cycle", back: "Newborn sleep cycles are short. Waking between cycles is normal, and babies may need feeding or comfort to settle again.", emoji: "🔄", tag: "Cycles" },
+            { front: "Self-Settling", back: "Some babies settle independently and others need help. You can try putting a calm, sleepy baby down if it suits them, while responding to hunger and distress.", emoji: "😴", tag: "Self-Settling" },
             { front: "Awake Window", back: "The ideal time between sleeps based on age. 0–4 weeks: 45–60 min. 4–8 weeks: 1–1.5 hrs. Putting baby down before the window closes prevents overtiredness.", emoji: "⏰", tag: "Timing" },
           ] } },
-          { id: "b-m1-l1-a3", type: "single_choice" as any, title: "Quick Check", content: { question: "A newborn enters which type of sleep first?", options: [
+          { id: "b-m1-l1-a3-v2", type: "single_choice" as any, title: "Quick Check", content: { question: "A newborn enters which type of sleep first?", options: [
             { label: "Deep/quiet sleep", isCorrect: false },
             { label: "Active/REM sleep", isCorrect: true },
             { label: "They alternate randomly", isCorrect: false },
@@ -1297,7 +1318,7 @@ export const BABY_COURSE: CourseModule[] = [
             { question: "What percentage of newborn sleep is spent in active (REM) sleep?", options: ["About 20%", "About 30%", "About 50%", "About 70%"], correct: 2, explanation: "Newborns spend approximately 50% of their sleep in active REM sleep — far more than adults. This is biologically normal and protective." },
             { question: "How long is a typical newborn sleep cycle?", options: ["20 minutes", "40 minutes", "60 minutes", "90 minutes"], correct: 1, explanation: "Newborn sleep cycles are about 40 minutes long, compared to 90 minutes for adults. This is why babies naturally stir frequently." },
             { question: "What is the awake window for a 0–4 week old baby?", options: ["15–30 minutes", "45–60 minutes", "90 minutes–2 hours", "2–3 hours"], correct: 1, explanation: "Newborns (0–4 weeks) can only handle 45–60 minutes of awake time before they need to sleep again. Exceeding this leads to overtiredness." },
-            { question: "Why does self-settling matter for baby sleep?", options: ["So parents can sleep uninterrupted all night from birth", "So babies can link sleep cycles without needing parental help each time", "It is not actually important at this stage", "So babies wake up fewer times overall"], correct: 1, explanation: "Self-settling allows babies to reconnect sleep cycles independently. Without this skill, every natural waking between 40-minute cycles requires parental re-settling." },
+            { question: "Why does self-settling matter for baby sleep?", options: ["So parents can sleep uninterrupted all night from birth", "So babies can link sleep cycles without needing parental help each time", "It is not actually important at this stage", "So babies wake up fewer times overall"], correct: 1, explanation: "Some babies gradually begin settling between cycles without help. Others still need a feed or comfort; responsive support is normal and does not mean you have failed." },
           ] } },
         ]
       },
@@ -1324,7 +1345,7 @@ export const BABY_COURSE: CourseModule[] = [
             { front: "Room Sharing", back: "The safest arrangement for the first 6 months (ideally 12) is baby in their own cot/bassinet in YOUR room. This reduces SIDS risk by up to 50% compared to sleeping in a separate room.", emoji: "🏠", tag: "Room Sharing" },
             { front: "Temperature", back: "Room temperature should be 16–20°C (61–68°F). Overheating is a SIDS risk factor. Dress baby in one more layer than you'd wear. Check baby's chest temperature, not hands or feet.", emoji: "🌡️", tag: "Temperature" },
           ] } },
-          { id: "b-m1-l2-a3", type: "true_false" as any, title: "Safety Check", content: { statement: "A baby who sleeps on their tummy is at no increased risk as long as the mattress is firm.", isTrue: false, explanation: "Back sleeping is the single most important safe sleep practice. Always place your baby on their back for every sleep. Once they can roll independently (usually 5–6 months), it's safe to let them find their own position." }},
+          { id: "b-m1-l2-a3-v2", type: "true_false" as any, title: "Safety Check", content: { statement: "A baby who sleeps on their tummy is at no increased risk as long as the mattress is firm.", isTrue: false, explanation: "Back sleeping is the single most important safe sleep practice. Always place your baby on their back for every sleep. Once they can roll independently (usually 5–6 months), it's safe to let them find their own position." }},
           { id: "b-m1-l2-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of safe sleep before moving on.", content: { intro: "Let's check your knowledge of safe sleep essentials.", passMark: 3, questions: [
             { question: "Which of the following is an essential safe sleep practice?", options: ["Place baby on their tummy to help them sleep longer", "Always place baby on their back for every sleep", "Use a soft mattress with a pillow for comfort", "Keep the room at 24°C to keep baby warm"], correct: 1, explanation: "Back sleeping for every sleep is the single most important safe sleep practice and significantly reduces the risk of SIDS." },
             { question: "When is it safe for baby to sleep in a completely separate room?", options: ["From birth, as long as you have a monitor", "After the first week when you need rest", "After at least 6 months in your room", "Whenever the baby starts sleeping through the night"], correct: 2, explanation: "Room sharing (baby in their own cot in your room) is recommended for at least the first 6 months and ideally 12 months. It reduces SIDS risk by up to 50%." },
@@ -1435,7 +1456,7 @@ export const BABY_COURSE: CourseModule[] = [
             { front: "Serve & Return Mismatch", back: "When a parent doesn't respond to a baby's bid for connection (the 'still face'), babies first try harder, then show distress, then turn inward. This shows how profoundly responsive interaction matters for emotional development.", emoji: "😶", tag: "Connection" },
             { front: "Enrichment Myth", back: "Babies don't need expensive educational toys or apps. Research is clear: human faces, real conversation, responsive interaction, varied sensory experience, and safe exploration are the most powerful brain-builders — all free.", emoji: "💡", tag: "Reality" },
           ] } },
-          { id: "b-m4-l1-a3", type: "true_false" as any, title: "Reality Check", content: { statement: "Educational baby videos and apps are beneficial for brain development in the first year.", isTrue: false, explanation: "The American Academy of Pediatrics recommends no screen time for children under 18-24 months (video calls with family excepted). Babies learn language through LIVE interaction, not screens — the two-way responsiveness is irreplaceable." }},
+          { id: "b-m4-l1-a3-v2", type: "true_false" as any, title: "Reality Check", content: { statement: "Educational baby videos and apps are beneficial for brain development in the first year.", isTrue: false, explanation: "The American Academy of Pediatrics recommends no screen time for children under 18-24 months (video calls with family excepted). Babies learn language through LIVE interaction, not screens — the two-way responsiveness is irreplaceable." }},
           { id: "b-m4-l1-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of baby brain development before moving on.", content: { intro: "Let's check your understanding of how your baby's brain grows through interaction.", passMark: 3, questions: [
             { question: "How many new neural connections does a baby's brain create per second in the first year?", options: ["About 1,000", "About 10,000", "About 100,000", "About 1 million"], correct: 3, explanation: "A baby's brain creates approximately 1 million new neural connections every second in the first year — the fastest rate of brain development in a human lifetime." },
             { question: "What is 'serve and return' in the context of baby brain development?", options: ["Feeding baby and burping them afterward", "Baby initiates interaction and parent responds, back and forth", "Offering a toy and taking it back to build attention", "A method for introducing solid foods"], correct: 1, explanation: "Serve and return is the back-and-forth interaction where baby initiates (looks, babbles, reaches) and the parent responds. This builds the neural foundations for language, emotional regulation, and attachment." },
@@ -1459,19 +1480,42 @@ export const BABY_COURSE: CourseModule[] = [
             { heading: "Tummy Time Troubleshooting", body: "If they hate it:\n• Do it straight after a nappy change (fresher and more alert)\n• Get down at their level — your face is motivation\n• Place on YOUR chest (tummy-to-chest)\n• Use a rolled towel under their chest for support\n• High-contrast mat or mirror in front of them\n• Build up slowly — 1 minute at a time\n\nGoal: 30 minutes total per day across multiple sessions by 3 months." },
             { heading: "Play Ideas by Age", body: "0–3m: Tummy time, mobiles, talking faces, high-contrast cards\n3–6m: Soft rattles, textured toys, peekaboo, floor mat exploration\n6–9m: Object permanence toys, soft stacking cups, bath play, treasure basket (everyday objects of different textures)\n9–12m: Push/pull toys, simple shape sorters, board books, finger foods as sensory play" },
           ]}},
+{
+  "id": "b-m4-l2-a3",
+  "type": "open_response",
+  "title": "Plan a Small Play Moment",
+  "content": {
+    "prompt": "Choose a brief, supervised play activity that suits your baby today. What cues will tell you they are ready, enjoying it or need a break? Describe when you will try it and how you will stay close.",
+    "saveToVault": true
+  }
+},
         ]
       },
       {
         id: "baby-m4-l3",
-        title: "Wonder Weeks — Developmental Leaps",
-        description: "Understanding the 10 'stormy periods' of the first year",
+        title: "Developmental Changes & Your Baby",
+        description: "Notice your own baby’s progress without a fixed leap calendar",
         activities: [
-          { id: "b-m4-l3-a1", type: "info_carousel" as any, title: "The Mental Leaps", content: { slides: [
-            { heading: "What Wonder Weeks Are", body: "Van de Rijt and Plooij's research identified predictable developmental 'leaps' — periods when babies' brains are doing intensive reorganisation work. During a leap, babies often:\n• Become clingier, fussier, and harder to settle\n• Have disrupted sleep\n• Feed more frequently\n• Seem to 'forget' skills they had\n\nThis is NOT regression. It's advancement. The leap is followed by a burst of new abilities." },
-            { heading: "The First 5 Leaps (Birth–6 months)", body: "Leap 1 (~5 weeks): Notices changing sensations — suddenly 'sees' light and patterns.\nLeap 2 (~8 weeks): Recognises patterns in the world.\nLeap 3 (~12 weeks): Transitions — finds that actions create change.\nLeap 4 (~19 weeks): Events — understands that actions are connected in a series.\nLeap 5 (~26 weeks): Relationships — starts understanding distance, depth, boundaries." },
-            { heading: "When They're Stormy", body: "During a leap, the three Cs become more intense: Clingy, Cranky, Crying.\n\nWhat helps:\n• More skin contact and holding (you can't 'spoil' a baby in a leap)\n• Offer the breast/bottle more — sucking is genuinely soothing\n• Simplify the environment — less stimulation, more comfort\n• Name what's happening: 'You're learning so much. This is hard work for your brain.'\n• Trust that the storm passes — usually within days to a couple of weeks" },
-          ]}},
-          { id: "b-m4-l3-a2", type: "open_response" as any, title: "Track Your Baby", content: { prompt: "How old is your baby and what have you noticed them doing that's new this week? How does knowing about developmental leaps change how you feel about a fussy period?", saveToVault: true }},
+          { id: "b-m4-l3-a1", type: "info_carousel" as any, title: "Observe, Respond, Ask", content: {
+  "slides": [
+    {
+      "heading": "A Framework, Not a Timetable",
+      "body": "The Wonder Weeks is a popular book framework. It is not an individual developmental assessment, and its week numbers should not be used to diagnose or explain every change in feeding, sleep or behaviour."
+    },
+    {
+      "heading": "Notice Your Baby",
+      "body": "Record what your baby is doing and how they respond to everyday play. Development varies; use your Well Child checks to discuss progress and questions rather than expecting every skill on a calendar date."
+    },
+    {
+      "heading": "When to Ask for Help",
+      "body": "Do not dismiss a loss of skills, feeding difficulty, illness or persistent change as a leap. Talk to your midwife, Well Child provider or GP. Offer comfort and respond to your baby’s needs while getting advice."
+    }
+  ]
+}},
+          { id: "b-m4-l3-a2", type: "open_response" as any, title: "Track Your Baby", content: {
+  "prompt": "What new skill have you noticed your baby practising? What question would you like to take to your next Well Child appointment? Describe a small responsive play activity you can try.",
+  "saveToVault": true
+}},
         ]
       }
     ]
@@ -1540,7 +1584,7 @@ export const BABY_COURSE: CourseModule[] = [
             { heading: "Gagging vs Choking", body: "GAGGING is normal, safe, and protective. The gag reflex in babies is positioned far forward on the tongue — it triggers frequently and dramatically but is the body doing its job. Signs: loud, retching noise, red face, eyes watering. Action: stay calm, don't interfere.\n\nCHOKING is different: silent, distressed, blue colour, ineffective breathing. Action: learn infant choking first aid BEFORE starting solids. Every parent should know this.\n\nKnowing the difference transforms your confidence." },
             { heading: "Foods to Avoid Before 12 Months", body: "Never before 12 months:\n• Honey (risk of botulism)\n• Whole cow's milk as main drink\n• Salt (kidneys can't handle it)\n• Added sugar\n• Whole nuts (choking risk)\n• Raw shellfish\n• Unpasteurised cheese\n• Shark, marlin, swordfish (high mercury)\n\nAfter 12 months: honey is fine, cow's milk becomes the drink, and most restrictions lift. Focus shifts to a varied, balanced family diet." },
           ]}},
-          { id: "b-m5-l3-a2", type: "true_false" as any, title: "Safety Check", content: { statement: "If your baby gags dramatically on a piece of food, you should immediately remove the food from their mouth with your finger.", isTrue: false, explanation: "Gag reflex is protective — let it do its job. Inserting your finger can actually push food further back. Stay calm, watch, and let them work through it. Act only if signs of actual choking appear: silence, ineffective breathing, blue colour. Learn infant first aid — it's the best preparation." }},
+          { id: "b-m5-l3-a2-v2", type: "true_false" as any, title: "Safety Check", content: { statement: "If your baby gags dramatically on a piece of food, you should immediately remove the food from their mouth with your finger.", isTrue: false, explanation: "Gag reflex is protective — let it do its job. Inserting your finger can actually push food further back. Stay calm, watch, and let them work through it. Act only if signs of actual choking appear: silence, ineffective breathing, blue colour. Learn infant first aid — it's the best preparation." }},
         ]
       }
     ]
@@ -1597,7 +1641,7 @@ export const BABY_COURSE: CourseModule[] = [
             { heading: "Postnatal Anxiety & Intrusive Thoughts", body: "Less talked about than PND but very common: postnatal anxiety. Constant worry about the baby, hypervigilance, inability to rest, catastrophising.\n\nIntrusive thoughts (unwanted, distressing thoughts about harm coming to the baby) affect up to 91% of new parents. Having the thought does NOT mean you want it to happen. It's your brain's overactive threat-detection — not evidence of who you are.\n\nIf intrusive thoughts feel overwhelming or you can't dismiss them: speak to your GP or midwife. You won't be judged. You will be helped." },
             { heading: "Partners & Dads", body: "Partners often have less visible needs: they're expected to 'be strong' for the new mother, return to work quickly, and manage on less sleep without the same social support network. Paternal PND is real, under-recognised, and often presents as irritability, withdrawal, or increased alcohol use rather than obvious sadness.\n\nIf you're a partner reading this: your mental health matters. Your child needs YOU well. Ask for help from your GP or a trusted person." },
           ]}},
-          { id: "b-m6-l2-a2", type: "true_false" as any, title: "Myth Buster", content: { statement: "Intrusive thoughts about harm coming to your baby are a sign that you might actually hurt them.", isTrue: false, explanation: "Intrusive thoughts are extremely common in new parenthood and have no predictive relationship with acting on them. They're the brain's overactive threat-detection system misfiring. Parents who have intrusive thoughts are typically horrified by them precisely because they love their baby. If these thoughts become distressing or uncontrollable, speak to your GP — this is very treatable." }},
+          { id: "b-m6-l2-a2-v2", type: "true_false" as any, title: "Myth Buster", content: { statement: "Intrusive thoughts about harm coming to your baby are a sign that you might actually hurt them.", isTrue: false, explanation: "Intrusive thoughts are extremely common in new parenthood and have no predictive relationship with acting on them. They're the brain's overactive threat-detection system misfiring. Parents who have intrusive thoughts are typically horrified by them precisely because they love their baby. If these thoughts become distressing or uncontrollable, speak to your GP — this is very treatable." }},
         ]
       },
       {
@@ -1647,7 +1691,7 @@ export const BABY_COURSE: CourseModule[] = [
             { front: "Rupture & Repair", back: "You don't need perfect attunement. What matters is the pattern of repair after disconnection. When you get it wrong (and you will), coming back to reconnect is what builds secure attachment and emotional resilience.", emoji: "🔧", tag: "Repair" },
             { front: "Safe Base", back: "A securely attached baby uses the caregiver as a 'safe base' from which to explore the world. They check back in visually, return when frightened, and are soothed effectively by their attachment figure.", emoji: "⚓", tag: "Exploration" },
           ] } },
-          { id: "b-m7-l1-a3", type: "true_false" as any, title: "Attachment Myth", content: { statement: "Responding too quickly to your baby's cries will 'spoil' them and make them more demanding.", isTrue: false, explanation: "Research shows the opposite: babies whose cries are consistently responded to in the first year cry LESS, not more. Consistent responsiveness builds a secure nervous system that doesn't need to escalate to be heard. The 'spoiling' concern has no evidence base for children under 12 months." }},
+          { id: "b-m7-l1-a3-v2", type: "true_false" as any, title: "Attachment Myth", content: { statement: "Responding too quickly to your baby's cries will 'spoil' them and make them more demanding.", isTrue: false, explanation: "Research shows the opposite: babies whose cries are consistently responded to in the first year cry LESS, not more. Consistent responsiveness builds a secure nervous system that doesn't need to escalate to be heard. The 'spoiling' concern has no evidence base for children under 12 months." }},
           { id: "b-m7-l1-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of attachment theory before moving on.", content: { intro: "Let's check your understanding of attachment and co-regulation.", passMark: 3, questions: [
             { question: "What percentage of children develop secure attachment?", options: ["About 30%", "About 45%", "About 60%", "About 80%"], correct: 2, explanation: "Approximately 60% of children develop secure attachment when their caregiver responds sensitively to their needs. Secure attachment is the most common outcome in loving, responsive caregiving environments." },
             { question: "What is co-regulation?", options: ["Two babies regulating each other's emotions", "Your calm nervous system helping your baby's stressed nervous system return to baseline", "Teaching a baby to self-soothe through controlled crying", "Feeding on a scheduled routine to regulate hunger"], correct: 1, explanation: "Co-regulation is the process where your calm nervous system helps regulate your baby's distressed nervous system. It's how emotional regulation is first learned — through the caregiver, then gradually internalised by the child." },
@@ -1693,22 +1737,66 @@ export const BABY_COURSE: CourseModule[] = [
           ] } },
           { id: "b-m3-l1-a1", type: "info_carousel" as any, title: "Choose Your Approach", content: { slides: [
             { heading: "The Gradual Retreat", body: "Gentlest approach. Over 2–3 weeks, gradually reduce your presence:\n1. Pat/shush in cot → 2. Hand on chest → 3. Sit beside cot → 4. Near door → 5. Outside room\n\nBest for: Sensitive babies, anxiety-prone parents. Takes longer but very gentle." },
-            { heading: "Pick Up / Put Down", body: "When baby cries, pick up and comfort until calm, then put back down awake. Repeat as many times as needed. Can be exhausting (30+ times in one session) but effective within 3–7 days. Best for: Babies 3–6 months." },
-            { heading: "Controlled Settling", body: "Put baby down awake. Leave room. Return at increasing intervals (2 min, 4 min, 6 min) to briefly reassure (pat, shush) then leave again. Research shows this does NOT cause harm or damage attachment when done at 6+ months. Best for: Babies 6+ months who need a clear reset." },
+            { heading: "Pick Up / Put Down", body: "Pick up and comfort an unsettled baby. You may try putting them down again when calm, if it suits them. There is no guaranteed number of repetitions or days; pause and seek support if the approach is distressing or feeding is affected." },
+            { heading: "Controlled Settling", body: "Structured settling approaches are not necessary for every family and are not a guarantee of better sleep. Discuss your baby's age, feeding, health and your preferences with a qualified health professional before trying a timed-check approach. Respond to hunger, illness and distress." },
           ]}},
           { id: "b-m3-l1-a2", type: "survey" as any, title: "Your Comfort Level", content: { question: "Which approach feels right for your family?", options: ["Gradual retreat (very gentle, slower)", "Pick up / Put down (moderate)", "Controlled settling (faster, more structured)", "Not sure yet — need more info"] }},
           { id: "b-m3-l1-a3", type: "flip_card" as any, title: "Sleep Training Methods Compared", instruction: "Flip each card to understand the key sleep approaches and when they work best.", content: { cards: [
             { front: "Gradual Retreat", back: "Gentlest approach. Over 2–3 weeks, gradually reduce your presence: pat/shush in cot → hand on chest → sit beside cot → near door → outside room. Best for sensitive babies and anxiety-prone parents. Takes longer but is very gentle.", emoji: "🐢", tag: "Gentle" },
-            { front: "Pick Up / Put Down", back: "When baby cries, pick up until calm, then put down awake. Can require 30+ repetitions in one session. Effective within 3–7 days. Best for babies aged 3–6 months. Exhausting but maintains close contact.", emoji: "🔄", tag: "Moderate" },
-            { front: "Controlled Settling", back: "Put baby down awake. Leave room. Return at increasing intervals (2 min, 4 min, 6 min) to briefly reassure, then leave. Research shows NO harm to attachment when done at 6+ months. Fastest method — results often within 3 days.", emoji: "⏱️", tag: "Structured" },
-            { front: "Drowsy But Awake", back: "The golden principle underpinning all methods: put baby down when drowsy but still conscious, not fully asleep. This gives them the opportunity to practise self-settling from the moment of falling asleep.", emoji: "😴", tag: "Principle" },
+            { front: "Pick Up / Put Down", back: "Pick up and comfort an unsettled baby. You may try putting them down again when calm, if it suits them. There is no guaranteed number of repetitions or days; pause and seek support if the approach is distressing or feeding is affected.", emoji: "🔄", tag: "Moderate" },
+            { front: "Controlled Settling", back: "Structured settling approaches are not necessary for every family and are not a guarantee of better sleep. Discuss your baby's age, feeding, health and your preferences with a qualified health professional before trying a timed-check approach. Respond to hunger, illness and distress.", emoji: "⏱️", tag: "Structured" },
+            { front: "Drowsy But Awake", back: "Putting a calm, sleepy baby down awake is one option, not a requirement. Feeding or comforting a baby to sleep can also be appropriate. Follow your baby's cues.", emoji: "😴", tag: "Principle" },
           ] } },
-          { id: "b-m3-l1-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of sleep training approaches before moving on.", content: { intro: "Let's check your understanding of sleep settling methods.", passMark: 3, questions: [
-            { question: "What is the 'gradual retreat' approach to sleep training?", options: ["Letting baby cry for increasing intervals until they fall asleep", "Gradually reducing your physical presence over 2–3 weeks", "Picking baby up every time they cry until they learn to sleep", "Using a dummy and removing it once baby is asleep"], correct: 1, explanation: "Gradual retreat involves slowly reducing your presence over 2–3 weeks: from in-cot patting, to hand on chest, to sitting beside, to near the door, to outside the room. It's the gentlest approach and suits sensitive temperaments." },
-            { question: "From what age is controlled settling (graduated extinction) considered developmentally appropriate?", options: ["From birth", "From 3 months", "From 6 months", "From 12 months"], correct: 2, explanation: "Research supports controlled settling for babies 6 months and older. At this age, babies have developed the capacity for self-settling, and studies show no harm to attachment when the method is used consistently." },
-            { question: "What is the 'drowsy but awake' principle?", options: ["Feeding baby until they almost fall asleep, then placing them in cot", "Putting baby down when drowsy but still conscious, to practise self-settling from sleep onset", "Using rocking until baby's eyes flutter, then stopping abruptly", "A method only used in the first 4 weeks of life"], correct: 1, explanation: "Drowsy but awake is the foundational principle: putting baby down before they fully fall asleep allows them to practise the transition to sleep independently — which means they can repeat it between sleep cycles." },
-            { question: "Research on controlled settling methods shows:", options: ["They cause significant long-term harm to attachment and stress response", "They are too harsh for use before 12 months", "They do NOT cause harm to attachment when used at 6+ months", "They should only be used after all other methods have failed"], correct: 2, explanation: "Multiple high-quality studies, including long-term follow-up research, have found that controlled settling methods (graduated extinction) do not cause harm to attachment security or stress response systems when used from 6 months of age." },
-          ] } },
+          { id: "b-m3-l1-a4-v2", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of sleep training approaches before moving on.", content: {
+  "intro": "Check your understanding of responsive sleep support.",
+  "passMark": 3,
+  "questions": [
+    {
+      "question": "Your baby wakes hungry before a scheduled feed. What should guide your response?",
+      "options": [
+        "Wait for the schedule",
+        "Respond to feeding cues and their individual health plan",
+        "Keep them awake longer",
+        "Skip the feed to teach settling"
+      ],
+      "correct": 1,
+      "explanation": "A sample routine should not delay a needed feed. Ask your health professional about individual feeding needs."
+    },
+    {
+      "question": "If feeding or rocking helps your baby settle, this means:",
+      "options": [
+        "You have failed at sleep",
+        "They will never settle alone",
+        "You are responding to a need; support needs vary",
+        "You must stop immediately"
+      ],
+      "correct": 2,
+      "explanation": "Responsive comfort can be normal. Independent settling develops differently for each baby."
+    },
+    {
+      "question": "Before considering a structured settling approach, what matters?",
+      "options": [
+        "Only the age on a chart",
+        "A promise that it works in three days",
+        "Your baby’s health, feeding and development, your preferences, and professional guidance",
+        "Following it regardless of distress"
+      ],
+      "correct": 2,
+      "explanation": "There is no one method or timetable that suits every baby or family."
+    },
+    {
+      "question": "If a sleep approach is distressing or feeding is affected:",
+      "options": [
+        "Continue at all costs",
+        "Ignore hunger cues",
+        "Pause, respond to your baby and seek advice",
+        "Remove daytime naps"
+      ],
+      "correct": 2,
+      "explanation": "Your baby’s wellbeing takes priority over completing a routine."
+    }
+  ]
+} },
           { id: "b-m3-l1-a5", type: "open_response" as any, title: "Your Sleep Plan", content: { prompt: "Based on your baby's age and temperament, which approach will you try first? What specific steps will you take this week? Note any concerns.", saveToVault: true }},
         ]
       }
@@ -1770,7 +1858,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Normalise Failure", body: "Share your own mistakes: 'I messed up at work today. Here's what I learned.' Let them see you struggle and persist. Model the self-talk: 'This is hard. I'm going to try a different approach.'" },
             { heading: "The YET Poster", body: "Make a family 'YET wall'. When someone says 'I can't do this', add 'yet' and put it on the wall:\n• 'I can't ride a bike... yet'\n• 'I can't do long division... yet'\n• 'I can't make friends at my new school... yet'\n\nRevisit it monthly to celebrate progress." },
           ]}},
-          { id: "kt-m1-l2-a2", type: "single_choice" as any, title: "Practice", content: { question: "Your child says 'I'm terrible at maths, I'll never get it.' Best response?", options: [
+          { id: "kt-m1-l2-a2-v2", type: "single_choice" as any, title: "Practice", content: { question: "Your child says 'I'm terrible at maths, I'll never get it.' Best response?", options: [
             { label: "'No you're not — you got an A last year!'", isCorrect: false },
             { label: "'Maths is really hard for you right now. What part is tricky? Let's figure it out.'", isCorrect: true },
             { label: "'Maybe maths just isn't your thing — focus on what you're good at'", isCorrect: false },
@@ -1831,7 +1919,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Teach Assertiveness (Not Aggression)", body: "Practice scripts they can use:\n• 'Stop. I don't like that.'\n• Walk away with confidence (head up, shoulders back)\n• Find a buddy — bullies target kids who are alone\n• 'That's your opinion' (for verbal bullying)\n\nRole-play these at home until they feel natural." },
             { heading: "Working With the School", body: "Document everything (dates, what happened, who witnessed).\nRequest a meeting with the teacher AND pastoral care.\nAsk: 'What is the school's specific plan to address this?'\nFollow up in writing.\nIf nothing changes, escalate to the principal.\nKeep your child informed: 'I spoke to the school. Here's what's happening.'" },
           ]}},
-          { id: "kt-m2-l2-a2", type: "single_choice" as any, title: "Scenario", content: { question: "Your child tells you a classmate is calling them names every day. What's your first response?", options: [
+          { id: "kt-m2-l2-a2-v2", type: "single_choice" as any, title: "Scenario", content: { question: "Your child tells you a classmate is calling them names every day. What's your first response?", options: [
             { label: "'Just ignore them — they'll stop eventually'", isCorrect: false },
             { label: "'That must really hurt. Tell me more about what's been happening.'", isCorrect: true },
             { label: "'I'm calling the school right now'", isCorrect: false },
@@ -1874,7 +1962,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "The Accommodation Trap", back: "The most natural instinct — removing what causes anxiety — actually makes anxiety worse long-term. Avoidance confirms the brain's message: 'This IS dangerous.' Gradual, supported exposure is the evidence-based approach.", emoji: "⚠️", tag: "Trap" },
             { front: "Bravery Ladder", back: "A graduated list of 8–10 steps from least to most anxiety-provoking, tackled one at a time. Example for school anxiety: 1) Talk about school at home, 2) Drive past, 3) Walk to the gate, 4) Go inside for 10 minutes... Each rung proves: 'I survived this.'", emoji: "🪜", tag: "Strategy" },
           ] } },
-          { id: "kt-m3-l1-a3", type: "true_false" as any, title: "Check", content: { statement: "The best way to help an anxious child is to remove the source of their anxiety.", isTrue: false, explanation: "While it feels kind, accommodation (removing the scary thing) reinforces the anxiety loop. Gradual exposure — facing the fear in small, supported steps — is how the brain learns 'I can handle this.'" }},
+          { id: "kt-m3-l1-a3-v2", type: "true_false" as any, title: "Check", content: { statement: "The best way to help an anxious child is to remove the source of their anxiety.", isTrue: false, explanation: "While it feels kind, accommodation (removing the scary thing) reinforces the anxiety loop. Gradual exposure — facing the fear in small, supported steps — is how the brain learns 'I can handle this.'" }},
           { id: "kt-m3-l1-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of childhood anxiety before moving on.", content: { intro: "Let's check your understanding of anxiety in children and teens.", passMark: 3, questions: [
             { question: "What is the amygdala's role in anxiety?", options: ["It controls logical thinking and helps children make good decisions", "It is the brain's alarm system — in anxious children it fires too readily, even without real danger", "It regulates sleep cycles which are disrupted by anxiety", "It produces cortisol, the stress hormone"], correct: 1, explanation: "The amygdala acts as the brain's smoke detector. In anxious children, it's over-sensitive — triggering an alarm response when there is no real danger. This is biology, not character weakness." },
             { question: "When does normal worry become problematic anxiety?", options: ["As soon as the child worries about anything at all", "When worry stops them from doing things they want to do, is disproportionate, and lasts weeks rather than days", "When the child cries about the worry", "When the parent notices they are worrying"], correct: 1, explanation: "All children worry sometimes — it's a normal part of development. Anxiety becomes a clinical concern when it significantly impairs functioning: stopping enjoyable activities, causing physical symptoms, or lasting disproportionately long." },
@@ -1909,7 +1997,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Building Brave, Not Fearless", body: "The goal isn't to eliminate fear — it's to teach her to act DESPITE fear. Goff's approach:\n• Normalise imperfection: share YOUR mistakes openly\n• Praise process over outcome: 'I loved how you kept trying'\n• Create safe failure zones: cooking, crafts, sport — where mistakes are expected\n• Limit reassurance: instead of 'you'll be fine,' try 'you can handle hard things'\n• Resist rescuing: let her struggle, sit with discomfort, find her own solutions" },
             { heading: "Connection Before Correction", body: "When your daughter is spiralling, she needs connection before strategy. Sit with her. Don't fix. Say: 'I'm here. You're safe. We'll figure this out together.' Once her nervous system calms (5–15 minutes), THEN introduce coping tools. A dysregulated child cannot learn — they can only feel." },
           ]}},
-          { id: "kt-m3-l3-a2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 10-year-old daughter refuses to go to her friend's birthday party because 'what if no one talks to me?' Best approach?", options: [
+          { id: "kt-m3-l3-a2-v2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 10-year-old daughter refuses to go to her friend's birthday party because 'what if no one talks to me?' Best approach?", options: [
             { label: "'Don't be silly, of course they will!'", isCorrect: false },
             { label: "'Fine, you don't have to go'", isCorrect: false },
             { label: "'That worry sounds really real. Let's make a bravery plan together — what's one small step?'", isCorrect: true },
@@ -1996,7 +2084,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "Risk & Peer Presence", back: "The teenage brain's reward centre fires MORE intensely in the presence of peers than alone. Brain scans confirm this. Risk-taking around friends is biological — the dopamine hit literally drowns out risk assessment signals.", emoji: "🎲", tag: "Risk" },
             { front: "Positive Plasticity", back: "The same plasticity that makes the teenage brain vulnerable also makes it exceptionally responsive to positive experiences. Music, sport, creativity, deep friendships — all wire the brain more powerfully during adolescence than at any other time.", emoji: "🌟", tag: "Opportunity" },
           ] } },
-          { id: "kt-m5-l1-a3", type: "single_choice" as any, title: "Understanding", content: { question: "Why do teenagers take more risks when they're with friends?", options: [
+          { id: "kt-m5-l1-a3-v2", type: "single_choice" as any, title: "Understanding", content: { question: "Why do teenagers take more risks when they're with friends?", options: [
             { label: "They want to show off", isCorrect: false },
             { label: "Their brain's reward system is amplified by peer presence", isCorrect: true },
             { label: "They don't care about consequences", isCorrect: false },
@@ -2034,7 +2122,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Digital Overload & Attention", body: "Jensen warns that constant digital switching (texts, apps, videos, notifications) is training the teenage brain for distraction, not focus. The brain strengthens whatever neural pathways are used most. A brain trained on 15-second videos builds weaker sustained-attention circuits. This isn't about willpower — it's structural." },
             { heading: "The Good News: Positive Plasticity", body: "The same plasticity that makes the teenage brain vulnerable also makes it exceptionally responsive to positive experiences. Music lessons, sport, creative pursuits, deep friendships, meditation — all wire the brain in beneficial ways MORE powerfully during adolescence than at any other time. Invest in enrichment, not just protection." },
           ]}},
-          { id: "kt-m5-l3-a2", type: "true_false" as any, title: "Brain Check", content: { statement: "A teenager's brain recovers from a heavy drinking episode just as well as an adult's brain.", isTrue: false, explanation: "Jensen's research shows the opposite — the teenage brain is MORE vulnerable to alcohol damage because key structures are still developing. White matter damage from binge drinking during adolescence can have lasting effects on memory and cognitive function." }},
+          { id: "kt-m5-l3-a2-v2", type: "true_false" as any, title: "Brain Check", content: { statement: "A teenager's brain recovers from a heavy drinking episode just as well as an adult's brain.", isTrue: false, explanation: "Jensen's research shows the opposite — the teenage brain is MORE vulnerable to alcohol damage because key structures are still developing. White matter damage from binge drinking during adolescence can have lasting effects on memory and cognitive function." }},
         ]
       }
     ]
@@ -2115,7 +2203,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "Approach Scripts", back: "Teach specific approach strategies: 'Can I play too?' (direct and simple). 'I've got a ball \u2014 want to play?' (offering something). 'Hey, want to play with me?' (to another solo child). Scripts practised at home are used at school.", emoji: "\ud83d\udde3\ufe0f", tag: "Scripts" },
             { front: "The Sportscaster Approach", back: "In sibling conflicts, narrate without judging: 'I see two kids who both want the same toy.' This teaches THEM to problem-solve rather than relying on you as judge. Your job: teach skills, not referee every battle.", emoji: "\ud83d\udce2", tag: "Siblings" },
           ] } },
-          { id: "kt-m7-l1-a3", type: "single_choice" as any, title: "Practice", content: { question: "Your 6-year-old comes home crying because their friend said \u2018I don\u2019t want to be your friend anymore.\u2019 Best response?", options: [
+          { id: "kt-m7-l1-a3-v2", type: "single_choice" as any, title: "Practice", content: { question: "Your 6-year-old comes home crying because their friend said \u2018I don\u2019t want to be your friend anymore.\u2019 Best response?", options: [
             { label: "\u2018Don\u2019t worry, they didn\u2019t mean it\u2019", isCorrect: false },
             { label: "\u2018That really hurt, didn\u2019t it? Tell me what happened.\u2019", isCorrect: true },
             { label: "\u2018Well, find a new friend then\u2019", isCorrect: false },
@@ -2191,7 +2279,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "The Sportscaster Approach", body: "Instead of judging who\u2019s right, narrate what you see:\n\u2022 \u2018I see two kids who both want the same toy.\u2019\n\u2022 \u2018It sounds like you\u2019re both feeling frustrated.\u2019\n\u2022 \u2018What\u2019s a solution that works for both of you?\u2019\n\nThis teaches THEM to solve conflicts rather than relying on you as judge." },
             { heading: "Never Compare", body: "The fastest way to destroy sibling relationships:\n\u2718 \u2018Why can\u2019t you be more like your sister?\u2019\n\u2718 \u2018Your brother never does this\u2019\n\u2718 Praising one in front of the other\n\n\u2714 Instead: celebrate each child\u2019s unique strengths separately\n\u2714 Create one-on-one time with each child\n\u2714 \u2018You two will figure this out\u2019 (show belief in their ability)" },
           ]}},
-          { id: "kt-m7-l6-a2", type: "single_choice" as any, title: "Sibling Scenario", content: { question: "Your two kids are fighting over a toy. Both are screaming 'IT'S MINE!' What's the sportscaster approach?", options: [{ label: "'Give it to your sister — she had it first!'", isCorrect: false }, { label: "'I see two kids who both want the same toy. What's a solution that works for both of you?'", isCorrect: true }, { label: "Take the toy away from both of them", isCorrect: false }, { label: "'Stop fighting or you're both going to your rooms!'", isCorrect: false }], explanation: "The sportscaster narrates without judging. This teaches THEM to problem-solve rather than relying on you as the referee." }},
+          { id: "kt-m7-l6-a2-v2", type: "single_choice" as any, title: "Sibling Scenario", content: { question: "Your two kids are fighting over a toy. Both are screaming 'IT'S MINE!' What's the sportscaster approach?", options: [{ label: "'Give it to your sister — she had it first!'", isCorrect: false }, { label: "'I see two kids who both want the same toy. What's a solution that works for both of you?'", isCorrect: true }, { label: "Take the toy away from both of them", isCorrect: false }, { label: "'Stop fighting or you're both going to your rooms!'", isCorrect: false }], explanation: "The sportscaster narrates without judging. This teaches THEM to problem-solve rather than relying on you as the referee." }},
         ]
       },
       {
@@ -2273,7 +2361,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Homework Without Tears", body: "\u2022 Create a consistent routine (same time, same place)\n\u2022 Break work into chunks: \u201820 minutes on, 5 minutes off\u2019\n\u2022 Be nearby but don\u2019t hover \u2014 available, not managing\n\u2022 If they\u2019re stuck: \u2018What do you think the first step is?\u2019 (don\u2019t give answers)\n\u2022 Let them experience natural consequences of forgotten homework occasionally \u2014 don\u2019t rescue every time" },
             { heading: "Redefine Success", body: "Ask: \u2018Did you try your best?\u2019 not \u2018What did you get?\u2019\n\nCelebrate effort, improvement, curiosity \u2014 not grades.\n\n\u2018I noticed you really pushed through that difficult chapter \u2014 that took real determination.\u2019\n\nYour child needs to know their worth isn\u2019t attached to a number on a page." },
           ]}},
-          { id: "kt-m8-l3-a2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 10-year-old is in tears because they got 78% on a test. They say \u2018I\u2019m so stupid.\u2019 Best response?", options: [
+          { id: "kt-m8-l3-a2-v2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 10-year-old is in tears because they got 78% on a test. They say \u2018I\u2019m so stupid.\u2019 Best response?", options: [
             { label: "\u2018That\u2019s a great mark! You should be proud!\u2019", isCorrect: false },
             { label: "\u2018You\u2019re clearly upset. What were you hoping for, and what felt hard about this test?\u2019", isCorrect: true },
             { label: "\u2018Next time study harder and you\u2019ll do better\u2019", isCorrect: false },
@@ -2304,7 +2392,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Grooming Red Flags", body: "Teach your child to recognise:\n\u2022 Someone who gives them lots of compliments and attention\n\u2022 Asks to keep their conversations secret\n\u2022 Offers gifts, game credits, or money\n\u2022 Asks them to move to a different platform\n\u2022 Asks for photos or video\n\u2022 Tries to isolate them from family/friends\n\nUse real language: \u2018Grooming is when an adult pretends to be your friend to get something from you.\u2019" },
             { heading: "Create a No-Blame Policy", body: "The single most important thing: your child must believe they can come to you WITHOUT getting in trouble. If they\u2019ve broken a screen rule and encountered something scary, the LAST thing you want is for them to hide it because they\u2019re afraid of your reaction.\n\n\u2018If something makes you uncomfortable online, you tell me. I will NEVER be angry at you for telling me. I will always help you.\u2019" },
           ]}},
-          { id: "kt-m8-l5-a2", type: "true_false" as any, title: "Digital Safety Check", content: { statement: "If your child encounters something scary online, the best approach is to take away their device as punishment.", isTrue: false, explanation: "If children fear punishment, they'll hide online problems instead of telling you. Create a no-blame policy: 'If something makes you uncomfortable online, tell me. I will NEVER be angry at you for telling me.'" }},
+          { id: "kt-m8-l5-a2-v2", type: "true_false" as any, title: "Digital Safety Check", content: { statement: "If your child encounters something scary online, the best approach is to take away their device as punishment.", isTrue: false, explanation: "If children fear punishment, they'll hide online problems instead of telling you. Create a no-blame policy: 'If something makes you uncomfortable online, tell me. I will NEVER be angry at you for telling me.'" }},
         ]
       },
       {
@@ -2317,7 +2405,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "What to Say", body: "\u2022 \u2018That\u2019s great \u2014 your brain is about to come up with something interesting\u2019\n\u2022 \u2018The boredom jar is on the shelf\u2019 (jar of activity ideas they\u2019ve written)\n\u2022 \u2018You have 15 minutes. If you\u2019re still bored after that, I\u2019ve got some chores\u2019\n\u2022 Don\u2019t: hand them a screen, plan an activity, feel guilty" },
             { heading: "Build Independent Play", body: "Set up conditions for self-directed time:\n\u2022 Art supplies accessible (not hidden)\n\u2022 Building materials (cardboard, tape, sticks)\n\u2022 Books everywhere\n\u2022 A \u2018quiet time\u2019 routine: 30\u201360 minutes daily of no screens, no parental entertainment\n\u2022 Get comfortable with them being uncomfortable \u2014 this is where growth happens" },
           ]}},
-          { id: "kt-m8-l6-a2", type: "single_choice" as any, title: "Boredom Response", content: { question: "Your 10-year-old says 'I'm SO BORED' for the fifth time today. Best response?", options: [{ label: "Hand them a tablet to keep them quiet", isCorrect: false }, { label: "'That's great — your brain is about to come up with something interesting'", isCorrect: true }, { label: "Plan an activity for them immediately", isCorrect: false }, { label: "'You have a room full of toys — how can you be bored?!'", isCorrect: false }], explanation: "Research shows boredom drives creativity and self-direction. Resist the urge to fix it. Children who learn to manage boredom develop stronger internal resources." }},
+          { id: "kt-m8-l6-a2-v2", type: "single_choice" as any, title: "Boredom Response", content: { question: "Your 10-year-old says 'I'm SO BORED' for the fifth time today. Best response?", options: [{ label: "Hand them a tablet to keep them quiet", isCorrect: false }, { label: "'That's great — your brain is about to come up with something interesting'", isCorrect: true }, { label: "Plan an activity for them immediately", isCorrect: false }, { label: "'You have a room full of toys — how can you be bored?!'", isCorrect: false }], explanation: "Research shows boredom drives creativity and self-direction. Resist the urge to fix it. Children who learn to manage boredom develop stronger internal resources." }},
         ]
       },
     ]
@@ -2355,7 +2443,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "No-Blame Policy", back: "The most protective thing you can offer: 'If you're ever in a situation where you've had something and need a ride, call me. No questions in the car.' Your first reaction determines whether they'll call you next time they need help.", emoji: "📞", tag: "Safety Net" },
             { front: "The Code Word System", back: "A pre-agreed code word or text = pick me up immediately, no questions asked tonight. Works for parties, unsafe cars, uncomfortable situations. Honour the deal every time — even at 2am. Debrief the next day, calmly.", emoji: "🔑", tag: "Code Word" },
           ] } },
-          { id: "kt-m9-l1-a3", type: "true_false" as any, title: "Check", content: { statement: "The most effective approach to preventing teenage substance use is showing them graphic images of drug damage.", isTrue: false, explanation: "Research consistently shows scare tactics are ineffective and can actually increase curiosity. Open, honest conversations about real risks, combined with strong family connection and rehearsed exit strategies, are far more effective." }},
+          { id: "kt-m9-l1-a3-v2", type: "true_false" as any, title: "Check", content: { statement: "The most effective approach to preventing teenage substance use is showing them graphic images of drug damage.", isTrue: false, explanation: "Research consistently shows scare tactics are ineffective and can actually increase curiosity. Open, honest conversations about real risks, combined with strong family connection and rehearsed exit strategies, are far more effective." }},
           { id: "kt-m9-l1-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test your understanding of navigating high-stakes teen situations.", content: { intro: "Let's check your knowledge of keeping teenagers safe while maintaining connection.", passMark: 3, questions: [
             { question: "Why do scare tactics about substance use generally NOT work with teenagers?", options: ["Because teenagers don't understand the health consequences", "Because teenagers are attracted to danger and scare tactics make substances seem more appealing", "Because research shows scare tactics are ineffective and make teens less likely to talk to you", "Because the images used in scare campaigns are not graphic enough"], correct: 2, explanation: "Research consistently shows scare tactics (graphic images, exaggerated consequences) are ineffective and can increase curiosity. They also damage trust, making teens less likely to come to you if they encounter problems. Honest, accurate conversations work better." },
             { question: "What age should substance conversations ideally begin?", options: ["Only when they ask about it", "At age 15–16 when peer pressure peaks", "At age 11–12, before they're likely to be offered anything", "At age 18 when they are legally an adult"], correct: 2, explanation: "Conversations should begin at 11–12 — before the high-risk peer pressure period. Starting early with age-appropriate facts means your child already has accurate information and open communication with you before they need it." },
@@ -2374,7 +2462,20 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "How to Get Out", body: "Practical exit strategies:\n\u2022 Code word text to parent = immediate pick-up\n\u2022 Pre-download a ride-share app with your payment card\n\u2022 \u2018My mum tracks my location \u2014 she\u2019ll know if I\u2019m in a car\u2019\n\u2022 Call ANY family member or trusted adult\n\u2022 Walk if it\u2019s safe, or go to the nearest open business\n\nPractice saying: \u2018I\u2019m going to find another way home.\u2019" },
             { heading: "After the Situation", body: "If they call you at 2am from a party:\n\u2022 Go get them. Say NOTHING in the car (except \u2018I\u2019m glad you called me\u2019).\n\u2022 Talk the next day when everyone is calm.\n\u2022 \u2018I\u2019m proud of you for making the safe choice. That was hard.\u2019\n\u2022 THEN discuss any other issues (were they drinking? were they somewhere they shouldn\u2019t have been?)\n\nThe message: safety first, consequences second." },
           ]}},
-          { id: "kt-m9-l2-a2", type: "fill_blanks" as any, title: "Practice the Script", content: { sentence: "When your teen wants to go to a party, respond with: 'I want to say ___ but I need to know: who's ___, where is it, what time will you be ___, and how are you getting ___?'", blanks: ["yes", "going", "home", "there"] }},
+          {
+  "id": "kt-m9-l2-a2-v2",
+  "type": "fill_blanks",
+  "title": "Practise a Safe Ride Script",
+  "content": {
+    "sentence": "If the driver has been drinking, I will ___ the ride. I can call ___ or use our code word ___. I will wait in a ___ place with a trusted person.",
+    "blanks": [
+      "decline",
+      "my trusted adult",
+      "our agreed word",
+      "safe"
+    ]
+  }
+},
         ]
       },
       {
@@ -2398,7 +2499,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
           { id: "kt-m9-l4-a1", type: "info_carousel" as any, title: "Mental Health Crisis", content: { slides: [
             { heading: "Warning Signs", body: "Take these seriously \u2014 even if they seem \u2018attention-seeking\u2019 (attention-seeking IS a call for help):\n\u2022 Withdrawal from friends, family, activities\n\u2022 Changes in sleep, appetite, energy\n\u2022 Giving away possessions\n\u2022 Talking about being a burden\n\u2022 Unexplained marks or long sleeves in summer\n\u2022 Saying \u2018What\u2019s the point?\u2019 or \u2018I wish I wasn\u2019t here\u2019\n\u2022 Sudden calmness after a period of depression (can indicate a decision has been made)" },
             { heading: "How to Ask the Hard Question", body: "Asking about suicide does NOT plant the idea. Research is clear on this.\n\nSay directly: \u2018Are you thinking about hurting yourself?\u2019 or \u2018Are you having thoughts about not wanting to be alive?\u2019\n\nIf yes:\n\u2022 Stay calm\n\u2022 \u2018I\u2019m really glad you told me. You\u2019re not alone.\u2019\n\u2022 Remove access to means (medications, sharp objects)\n\u2022 Don\u2019t leave them alone\n\u2022 Call your local crisis line or take them to the emergency department" },
-            { heading: "Self-Harm Is Communication", body: "Self-harm (cutting, burning, hitting themselves) is usually NOT a suicide attempt \u2014 it\u2019s a coping mechanism for overwhelming emotions. Do not react with horror or anger.\n\n\u2022 \u2018I can see you\u2019re in a lot of pain. I want to help.\u2019\n\u2022 Don\u2019t demand they stop immediately (they need alternative coping strategies first)\n\u2022 Seek professional support (GP referral to a psychologist or counsellor)\n\u2022 NZ Crisis: Need to Talk? Free call or text 1737" },
+            { heading: "Take Self-Harm Seriously", body: "Stay calm and listen without blame. Self-harm can have different meanings; do not assume there is no suicide risk. Ask about immediate safety and seek help from a GP or mental health professional. If there is an overdose, serious injury or immediate danger, seek emergency help; in New Zealand call 111. Work with your young person and a professional on safer ways to cope and a support plan." },
           ]}},
           { id: "kt-m9-l4-a2", type: "open_response" as any, title: "Your Safety Plan", content: { prompt: "Do you know your local crisis numbers? Does your teen know they can talk to you about dark thoughts without being judged? Write down your family\u2019s mental health safety plan.", saveToVault: true }},
         ]
@@ -2413,7 +2514,28 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Teaching Healthy Relationship Signs", body: "Teach these BEFORE they start dating:\n\n\u2714 Healthy: respects your boundaries, supports your friendships, communicates openly, makes you feel good about yourself\n\n\u2718 Unhealthy: jealous, controlling, isolating you from friends/family, monitoring your phone, making you feel like you\u2019re never good enough, guilt-tripping\n\n\u2018A person who loves you will never make you feel afraid.\u2019" },
             { heading: "The Consent Conversation", body: "Be direct and ongoing:\n\u2022 \u2018You have the right to say no at ANY point \u2014 even if you said yes before\u2019\n\u2022 \u2018If someone is too drunk/high to clearly say yes, that\u2019s a no\u2019\n\u2022 \u2018A real partner respects boundaries without sulking\u2019\n\u2022 \u2018Pressure is not love\u2019\n\nThis conversation isn\u2019t one-off. It\u2019s ongoing, casual, and normalised." },
           ]}},
-          { id: "kt-m9-l5-a2", type: "decision_point" as any, title: "The Party Pickup", content: { scenario: "It's 11pm on a Saturday. Your 15-year-old texts the code word 'PIZZA' — your agreed signal that they need picking up, no questions asked.", options: [{ label: "Go immediately, stay calm, save the conversation for tomorrow", outcome: "This is exactly how the system should work. They used the code word, which means they trusted you. Interrogating them in the car breaks that trust. Tomorrow, gently: 'I'm glad you texted. Want to talk about it?'" }, { label: "Call them and demand to know what happened before you drive", outcome: "This defeats the purpose of a no-questions code word. Next time they'll think twice about using it — and might stay in an unsafe situation instead." }, { label: "Text back 'What happened? Are you in trouble?'", outcome: "Even texting questions can feel like pressure. The deal was: text PIZZA, get picked up, no questions tonight. Honour the deal." }] }},
+          {
+  "id": "kt-m9-l5-a2-v2",
+  "type": "decision_point",
+  "title": "Supporting Heartbreak",
+  "content": {
+    "scenario": "Your teenager has just been broken up with. They are crying and say, \"I never want to talk to anyone again.\" How do you respond?",
+    "options": [
+      {
+        "label": "\"This really hurts. Would you like me to listen, sit quietly with you, or give you a little space and check back?\"",
+        "outcome": "Take the loss seriously. Offer presence and a choice, check back, and help maintain connection and everyday routines. Seek appropriate support if distress persists or you are concerned about safety."
+      },
+      {
+        "label": "\"You are too young to know what love is.\"",
+        "outcome": "Dismissing the relationship dismisses their pain. You can understand that feelings may change without minimising what they feel now."
+      },
+      {
+        "label": "Contact the ex-partner and demand an explanation.",
+        "outcome": "Taking over can undermine trust and privacy. Ask your teenager what support they want and help them choose respectful boundaries."
+      }
+    ]
+  }
+},
         ]
       },
       {
@@ -2426,7 +2548,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "The Re-Engagement Plan", body: "If they\u2019ve been away:\n1. Meet with the school (pastoral care, dean, counsellor)\n2. Start with partial attendance (just mornings, just favourite subjects)\n3. Identify one adult at school they trust\n4. Address the underlying issue (therapy if needed)\n5. Small wins: \u2018You went for two hours today. That took real courage.\u2019\n\nDon\u2019t: threaten, bribe, or make them feel worse for struggling." },
             { heading: "When They Just Don\u2019t Care", body: "Some teens lose motivation without anxiety \u2014 they\u2019re just... disconnected. This often signals:\n\u2022 They don\u2019t see the relevance\n\u2022 They\u2019re overwhelmed and have shut down\n\u2022 Depression\n\u2022 They need autonomy (being controlled = checking out)\n\nTry: \u2018What DO you care about? Let\u2019s figure out how to connect that to your future.\u2019" },
           ]}},
-          { id: "kt-m9-l6-a2", type: "true_false" as any, title: "Myth Buster", content: { statement: "Giving your teenager privacy means you should never check their phone or social media.", isTrue: false, explanation: "Privacy is earned and age-appropriate. Younger teens need more oversight, gradually reducing as they prove trustworthy. The key: be transparent about it. 'I respect your privacy AND I have a responsibility to keep you safe. Here's how we'll balance that.'" }},
+          { id: "kt-m9-l6-a2-v2", type: "true_false" as any, title: "Myth Buster", content: { statement: "Giving your teenager privacy means you should never check their phone or social media.", isTrue: false, explanation: "Privacy is earned and age-appropriate. Younger teens need more oversight, gradually reducing as they prove trustworthy. The key: be transparent about it. 'I respect your privacy AND I have a responsibility to keep you safe. Here's how we'll balance that.'" }},
         ]
       },
       {
@@ -2440,6 +2562,28 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "If You\u2019re Struggling", body: "It\u2019s okay if this wasn\u2019t what you expected. It\u2019s okay to need time to adjust. What matters is:\n\u2022 Your child\u2019s safety and mental health\n\u2022 Research shows family acceptance is THE strongest protective factor against depression and suicide in LGBTQ+ youth\n\u2022 Get support for yourself (parent groups, counselling) so you can show up for your child\n\u2022 Their identity is not a reflection of your parenting" },
           ]}},
           { id: "kt-m9-l7-a2", type: "sort" as any, title: "Priority Order", content: { instruction: "When your teen is struggling emotionally, put these responses in the right order:", items: ["Listen without trying to fix", "Validate their feelings", "Ask what they need from you", "Offer perspective or advice (only if asked)", "Follow up later to check in"], correctOrder: ["Listen without trying to fix", "Validate their feelings", "Ask what they need from you", "Offer perspective or advice (only if asked)", "Follow up later to check in"] }},
+{
+  "id": "kt-m9-l7-a3",
+  "type": "decision_point",
+  "title": "Identity Moment",
+  "content": {
+    "scenario": "Your 14-year-old comes to you and says they think they might be gay/bi/trans. They look terrified.",
+    "options": [
+      {
+        "label": "'Thank you for trusting me with this. I love you — that doesn't change. Tell me more about how you're feeling.'",
+        "outcome": "This is the gold standard response. Your child just did the bravest thing they've ever done. Your first words will echo for the rest of their life. Lead with love, follow with curiosity."
+      },
+      {
+        "label": "'Are you sure? You're probably just going through a phase.'",
+        "outcome": "Dismissing their identity as a 'phase' tells them their feelings aren't valid. Even if understanding evolves over time, their experience RIGHT NOW is real and deserves respect."
+      },
+      {
+        "label": "'We need to talk to someone about this' (implying it's a problem)",
+        "outcome": "Treating their identity as a problem to solve sends a devastating message. If they need support, frame it as: 'Would it help to talk to someone who understands what you're going through?'"
+      }
+    ]
+  }
+},
         ]
       },
       {
@@ -2452,7 +2596,20 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "The Safety Toolkit", body: "Give them practical tools:\n\u2022 Phone charged, location sharing on\n\u2022 Cash for emergencies\n\u2022 Code word = pick me up immediately\n\u2022 Never leave your drink unattended\n\u2022 Stick with friends, leave with friends\n\u2022 If something feels wrong, LEAVE\n\u2022 \u2018You can always use me as an excuse: Mum said I have to be home by 11\u2019" },
             { heading: "If You\u2019re Hosting", body: "If the party is at YOUR house:\n\u2022 Be visible but not hovering\n\u2022 No alcohol for under-18s (you\u2019re legally liable)\n\u2022 Lock away your own alcohol and medications\n\u2022 Have food and non-alcoholic drinks available\n\u2022 Know who\u2019s there and how they\u2019re getting home\n\u2022 Have a clear end time\n\u2022 Check the garden/bedrooms periodically" },
           ]}},
-          { id: "kt-m9-l8-a2", type: "fill_blanks" as any, title: "Complete the Conversation", content: { sentence: "When your teen says 'You don't understand!', try: 'You're right — I might not fully ___. Help me ___. I'm not here to ___ you, I'm here to ___ you.'", blanks: ["understand", "understand", "judge", "support"] }},
+          {
+  "id": "kt-m9-l8-a2-v2",
+  "type": "fill_blanks",
+  "title": "Agree the Party Safety Plan",
+  "content": {
+    "sentence": "Before you go, let us agree who is ___, how you will get ___, and what time we will ___. If you feel unsafe, send ___ and I will help you leave.",
+    "blanks": [
+      "supervising",
+      "home safely",
+      "check in",
+      "our code word"
+    ]
+  }
+},
         ]
       },
     ]
@@ -2719,7 +2876,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "Performance vs Mastery", back: "Performance-oriented students ('I need an A') burn out faster — every test becomes a judgment of worth. Mastery-oriented students ('I want to understand this') are more resilient because they're driven by curiosity, not fear. Shift 'What did you get?' to 'What did you learn?'", emoji: "📚", tag: "Learning Mindset" },
             { front: "When They're Struggling", back: "Before panicking about poor grades: Ask 'What's going on?' (not 'Why are failing?'). Investigate whether there's a learning difficulty, social issue, mental health concern, or wrong subject. Separate the person from the grade: 'You are not your marks.'", emoji: "🤝", tag: "When It's Hard" },
           ] } },
-          { id: "kt-m14-l1-a3", type: "single_choice" as any, title: "Scenario", content: { question: "Your 14-year-old says 'School is pointless, I'm going to be a YouTuber.' Best response?", options: [
+          { id: "kt-m14-l1-a3-v2", type: "single_choice" as any, title: "Scenario", content: { question: "Your 14-year-old says 'School is pointless, I'm going to be a YouTuber.' Best response?", options: [
             { label: "'That's not a real career. Focus on your studies.'", isCorrect: false },
             { label: "'Tell me more about what you'd create. What skills would you need?'", isCorrect: true },
             { label: "'Fine, but you still need to pass.'", isCorrect: false },
@@ -2906,7 +3063,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "It Can Happen to Anyone", back: "Risk factors: family history of addiction, untreated anxiety or depression, early exposure (before 15), trauma, social isolation, peer group that normalises use. Protective factors: strong family bond, clear values, emotional literacy, meaningful activities, delayed first exposure.", emoji: "⚠️", tag: "Risk & Protection" },
             { front: "Cannabis & the Teen Brain", back: "Cannabis is not safe for teenagers. Regular use before age 25 can impair memory, motivation, and attention, and increase psychosis risk in those predisposed. The developing brain is uniquely vulnerable. 'Natural' does not mean safe for a brain under construction.", emoji: "🧠", tag: "Drug Facts" },
           ] } },
-          { id: "kt-m16-l1-a3", type: "true_false" as any, title: "Fact Check", content: { statement: "Cannabis is completely safe for teenagers because it's a natural plant.", isTrue: false, explanation: "Cannabis significantly affects the developing teenage brain. Research shows regular use before age 25 can impair memory, motivation, attention, and increase risk of psychosis in those predisposed. 'Natural' does not mean safe for a developing brain." }},
+          { id: "kt-m16-l1-a3-v2", type: "true_false" as any, title: "Fact Check", content: { statement: "Cannabis is completely safe for teenagers because it's a natural plant.", isTrue: false, explanation: "Cannabis significantly affects the developing teenage brain. Research shows regular use before age 25 can impair memory, motivation, attention, and increase risk of psychosis in those predisposed. 'Natural' does not mean safe for a developing brain." }},
           { id: "kt-m16-l1-a4", type: "knowledge_check" as any, title: "Knowledge Check", instruction: "Test what you've learned before moving on.", content: { intro: "Let's check your understanding of the key truths about addiction.", passMark: 3, questions: [
             { question: "Why is the teenage brain especially vulnerable to addiction?", options: ["Teenagers make bad decisions on purpose", "The reward system is hypersensitive while the prefrontal cortex (the 'brake') is still developing", "Teenagers don't understand consequences", "Peer pressure is always the cause"], correct: 1, explanation: "The teenage brain has a highly sensitive reward system that responds intensely to substances, but the prefrontal cortex — responsible for impulse control and long-term thinking — isn't fully developed until around age 25. This biological mismatch creates real vulnerability." },
             { question: "What is identified as the strongest protective factor against teen substance abuse?", options: ["Strict rules and consequences", "Zero-tolerance policies at school", "A teen who feels genuinely connected to family and has at least one trusted adult", "Keeping teens busy with activities"], correct: 2, explanation: "Connection is the antidote to addiction. Teens who feel genuinely loved, known, and connected — and who have a trusted adult they can talk to — are dramatically less likely to turn to substances to manage difficult emotions." },
@@ -3202,7 +3359,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "The Punishment-Rebellion Cycle", back: "Research shows punishment creates one of three outcomes: compliance through fear (breaks the relationship), sneakiness (they learn not to get caught), or rebellion (they push back harder). None of these teach good decisions when you're not watching.", emoji: "🔄", tag: "The Cycle" },
             { front: "Behaviour Is Communication", back: "Every challenging behaviour is trying to tell you something. Hitting = 'I don't have words for this feeling.' Whining = 'I need connection.' Defiance = 'I need some control.' Lying = 'I don't feel safe telling the truth.' Address the NEED underneath.", emoji: "📣", tag: "What Behaviour Means" },
           ] } },
-          { id: "kt-m19-l1-a3", type: "single_choice" as any, title: "Check", content: { question: "Your 4-year-old hits their sibling. According to gentle discipline, the FIRST step is:", options: [
+          { id: "kt-m19-l1-a3-v2", type: "single_choice" as any, title: "Check", content: { question: "Your 4-year-old hits their sibling. According to gentle discipline, the FIRST step is:", options: [
             { label: "Put them in time-out immediately", isCorrect: false },
             { label: "Take away a toy as consequence", isCorrect: false },
             { label: "Ensure the hurt child is safe, then connect with the hitter to understand what happened", isCorrect: true },
@@ -3316,7 +3473,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "The Power of 'Tell Me More'", back: "Silverman's simplest tool: when your child mentions anything, say 'Tell me more about that.' Not 'why?' (feels interrogative). Not 'what happened?' (feels investigative). Just: 'Tell me more.' Works with toddlers and teenagers. Signals genuine interest, hands them control of the conversation.", emoji: "💬", tag: "Tell Me More" },
             { front: "The Goal of Listening", back: "The goal of listening isn't to fix the problem. It's to make your child feel understood. A child who feels understood will keep talking, keep coming back, and eventually let you in to help. Advice without acknowledgment is wasted — understanding first unlocks everything else.", emoji: "🔑", tag: "The Real Goal" },
           ] } },
-          { id: "kt-m20-l1-a3", type: "single_choice" as any, title: "Practice", content: { question: "Your child says 'Nobody at school likes me.' Best first response?", options: [
+          { id: "kt-m20-l1-a3-v2", type: "single_choice" as any, title: "Practice", content: { question: "Your child says 'Nobody at school likes me.' Best first response?", options: [
             { label: "'Of course they do! You have lots of friends!'", isCorrect: false },
             { label: "'That sounds really lonely. Tell me more about what happened.'", isCorrect: true },
             { label: "'Maybe if you were nicer to people...'", isCorrect: false },
@@ -3359,7 +3516,15 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { question: "What is the recommended approach when a child is accidentally exposed to pornography?", options: ["React with strong moral disapproval so they know it's wrong", "Ignore it — they'll forget", "'You're not in trouble. What you saw doesn't represent real relationships — those are actors, and real intimacy involves caring about each other'", "Block all internet access immediately"], correct: 2, explanation: "Silverman recommends a calm, educational response. Shame or strong disapproval makes children afraid to come to you in the future. Education — this is not reality, real intimacy is different — provides the protective context they need." },
             { question: "The most important message to convey in all body safety conversations is:", options: ["Sexual information should be kept private", "Your body is shameful and private", "If anything happens or you see anything confusing, you can always tell me and you will never be in trouble", "These topics are for when you're older"], correct: 2, explanation: "Children who know they can come to a trusted adult without facing punishment are exponentially safer. Creating a 'no trouble' zone around body conversations means children are more likely to disclose abuse, seek information from you rather than peers, and come to you when things go wrong." },
           ] } },
-          { id: "kt-m20-l2-a4", type: "comparison" as any, title: "Your Legacy Lists", content: { title: "What You Received — What You'll Pass On", columnA: { label: "Keep (from my parents)", items: ["What did they do well?", "What traditions do you cherish?", "What values did they instil?", "What made you feel safe?"] }, columnB: { label: "Change (stops with me)", items: ["What caused you pain?", "What patterns do you repeat under stress?", "What would you never want your child to feel?", "What phrase still echoes in your head?"] }, reflection: "You are the transition generation. What stops with you doesn't reach your grandchildren." }},
+          {
+  "id": "kt-m20-l2-a4-v2",
+  "type": "open_response",
+  "title": "Practise a Body-Boundaries Conversation",
+  "content": {
+    "prompt": "Write an age-appropriate conversation about asking before touching, respecting a no, and telling a trusted adult about unwanted touch. How will you show that your child can decline a hug, even from family? Include one sentence you will practise together.",
+    "saveToVault": true
+  }
+},
         ]
       },
       {
@@ -3507,7 +3672,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { front: "The Shame Spiral", back: "Trigger → Internal message ('I am not enough') → Physical response (heat, wanting to disappear) → Behaviour: fight, flight, or freeze → Temporary relief, then deeper shame ('I reacted badly — which proves I'm broken'). Knowing where in this spiral your child is tells you exactly what they need.", emoji: "🌀", tag: "The Spiral" },
             { front: "Your Own Shame History", back: "You can't give your child what you don't have. Common parent shame triggers: child misbehaves in public, school feedback about your child, losing your temper, comparison to 'better' parents. When you feel shame as a parent, notice it, name it. It needs to be witnessed — not acted on.", emoji: "🪞", tag: "Parent Shame" },
           ] } },
-          { id: "kt-shame-l1-a3", type: "single_choice" as any, title: "Check Your Understanding", content: { question: "Your 9-year-old cheats on a test. Which response targets guilt (the behaviour) rather than shame (the self)?", options: [
+          { id: "kt-shame-l1-a3-v2", type: "single_choice" as any, title: "Check Your Understanding", content: { question: "Your 9-year-old cheats on a test. Which response targets guilt (the behaviour) rather than shame (the self)?", options: [
             { label: "'You should be ashamed of yourself — I raised you better than this'", isCorrect: false },
             { label: "'What were you THINKING?!' (with obvious disappointment and contempt)", isCorrect: false },
             { label: "'Cheating isn't okay. What happened — what were you trying to solve? Let's figure out a different way to handle this.'", isCorrect: true },
@@ -3571,7 +3736,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { heading: "Protecting Kids from Failure: The Backfire", body: "Brown identifies a parenting paradox: the more we try to protect our children from disappointment, failure, and pain, the less capable they become of handling it.\n\n'Never let them fail' teaches: the world is too dangerous for you to handle alone. You need me to make it safe.\n'I believe you can handle this' teaches: you have what it takes. Hard things are survivable.\n\nBeing willing to let your child struggle in supported ways is one of the most loving, courageous things you can do." },
             { heading: "The 'Enough' Conversation", body: "One of the most powerful things you can do for your child: tell them explicitly — not in response to achievement but simply and often — that they are ENOUGH.\n\n'You don't have to earn my love. You already have it.'\n'You being you is what I love — not your grades/performance/behaviour.'\n'You are enough exactly as you are.'\n\nBrown's research shows children who believe they are inherently worthy — separate from what they achieve — are more resilient, more connected, and more capable than those who must prove their worth." },
           ]}},
-          { id: "kt-shame-l3-a2", type: "single_choice" as any, title: "Daring Greatly Practice", content: { question: "Your teenage daughter is about to try out for the school play and is terrified of failing. What does 'daring greatly' look like as her parent?", options: [
+          { id: "kt-shame-l3-a2-v2", type: "single_choice" as any, title: "Daring Greatly Practice", content: { question: "Your teenage daughter is about to try out for the school play and is terrified of failing. What does 'daring greatly' look like as her parent?", options: [
             { label: "'You'll definitely get it — you're so talented!'", isCorrect: false },
             { label: "'I know this is scary. Trying when you might fail is the bravest thing. I'm proud of you for showing up.'", isCorrect: true },
             { label: "'Just don't bother if you're not confident you'll get in'", isCorrect: false },
@@ -3632,7 +3797,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { question: "What does 'belonging to yourself' require?", options: ["Being introverted and self-sufficient", "Knowing your values and being willing to stand alone rather than betray who you are", "Not caring what other people think", "Being popular enough to not need others' approval"], correct: 1, explanation: "Self-belonging means knowing your actual values, thoughts, and feelings — and being willing to tolerate social discomfort rather than abandon them. This is the foundation of all genuine belonging — you cannot connect authentically until you know yourself." },
             { question: "Brown's 'wilderness' metaphor describes:", options: ["The isolation of social rejection", "The feeling of belonging to yourself — exposed and uncomfortable but where genuine connection lives", "The teenage years in general", "The experience of being an outsider at school"], correct: 1, explanation: "The 'wilderness' is Brown's image for the experience of standing in your own truth — uncomfortable, exposed, but authentic. People who can do this (be themselves even when the group expects something different) experience the deepest genuine connection." },
           ] } },
-          { id: "kt-belong-l1-a4", type: "true_false" as any, title: "Check", content: { statement: "A teenager with a large friend group who is included in everything is unlikely to feel lonely.", isTrue: false, explanation: "Brown's research shows widespread social belonging (fitting in with many groups) and true belonging (being genuinely known and accepted) are entirely different. Many socially successful teenagers report profound loneliness because they're performing, not connecting. True connection comes from authenticity — being known for who you actually are." }},
+          { id: "kt-belong-l1-a4-v2", type: "true_false" as any, title: "Check", content: { statement: "A teenager with a large friend group who is included in everything is unlikely to feel lonely.", isTrue: false, explanation: "Brown's research shows widespread social belonging (fitting in with many groups) and true belonging (being genuinely known and accepted) are entirely different. Many socially successful teenagers report profound loneliness because they're performing, not connecting. True connection comes from authenticity — being known for who you actually are." }},
         ]
       },
       {
@@ -3741,7 +3906,28 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { question: "During drop-off anxiety, what does Goff recommend after validating the child's feelings?", options: ["Stay as long as they need until they feel okay", "Explain in detail why school is safe", "Create a goodbye ritual and make a quick, warm exit — long goodbyes intensify anxiety", "Call them during the day to check in"], correct: 2, explanation: "Long, emotional goodbyes unintentionally communicate that the parent also doubts the child can handle it. A warm, brief, ritualised goodbye (special handshake, kiss on the palm) and quick confident exit signals: 'I believe you'll be okay.' That confidence is contagious." },
             { question: "When a young child is afraid of the dark, the BEST response is:", options: ["'There's nothing to be scared of — darkness can't hurt you'", "'Oh, the dark IS scary isn't it? Let me always sleep with you'", "'I understand it feels scary. Let's make a plan that helps you feel safe'", "'Stop being silly and go to sleep'"], correct: 2, explanation: "Dismissing the fear ('there's nothing to be scared of') invalidates their experience. Catastrophising or accommodating every anxiety maintains it. The balanced response validates the emotion while problem-solving: acknowledging the fear and addressing it practically." },
           ] } },
-          { id: "kt-m22-l1-a4", type: "decision_point" as any, title: "Identity Moment", content: { scenario: "Your 14-year-old comes to you and says they think they might be gay/bi/trans. They look terrified.", options: [{ label: "'Thank you for trusting me with this. I love you — that doesn't change. Tell me more about how you're feeling.'", outcome: "This is the gold standard response. Your child just did the bravest thing they've ever done. Your first words will echo for the rest of their life. Lead with love, follow with curiosity." }, { label: "'Are you sure? You're probably just going through a phase.'", outcome: "Dismissing their identity as a 'phase' tells them their feelings aren't valid. Even if understanding evolves over time, their experience RIGHT NOW is real and deserves respect." }, { label: "'We need to talk to someone about this' (implying it's a problem)", outcome: "Treating their identity as a problem to solve sends a devastating message. If they need support, frame it as: 'Would it help to talk to someone who understands what you're going through?'" }] }},
+          {
+  "id": "kt-m22-l1-a4-v2",
+  "type": "decision_point",
+  "title": "Small Steps Through a Worry",
+  "content": {
+    "scenario": "Your 4-year-old clings to you at a familiar playgroup and says they are scared to go in. What could you try?",
+    "options": [
+      {
+        "label": "Name the worry and offer a small step together: watch from the doorway, then choose one familiar activity.",
+        "outcome": "Acknowledge the feeling, stay alongside them and offer a manageable next step. Let the child help choose it; avoid forcing or promising that nothing will ever feel scary."
+      },
+      {
+        "label": "Tell them big children do not get scared and leave immediately.",
+        "outcome": "Shame and an abrupt departure can make it harder to feel safe. Connect first and agree a predictable goodbye with the caregiver."
+      },
+      {
+        "label": "Promise they will never need to go anywhere that worries them.",
+        "outcome": "Comfort helps, but avoiding every manageable challenge can shrink their confidence. Seek support if worry persists or disrupts daily life."
+      }
+    ]
+  }
+},
         ]
       },
       {
@@ -3773,7 +3959,7 @@ export const KIDS_TEENS_COURSE: CourseModule[] = [
             { question: "In Goff's tween anxiety framework, what does 'externalise' mean?", options: ["Talk about anxiety with other people", "Separate the anxiety from the child's identity: 'That's your anxiety talking, not the truth'", "Get anxiety treated by an external specialist", "Talk about problems outside the home"], correct: 1, explanation: "Externalising means helping children see anxiety as a visitor, not as who they are. 'Your anxiety is telling you that you'll fail — what does YOUR voice say?' This creates distance between the child's identity and the anxious thought, reducing its power." },
             { question: "Why might a straight-A student actually be suffering from significant anxiety?", options: ["High achievers are never truly anxious", "Academic anxiety always leads to poor grades", "Anxiety can drive high performance — masking the distress behind impressive results ('the gifted anxious child')", "High-achieving children don't experience social anxiety"], correct: 2, explanation: "The 'gifted anxious child' phenomenon: anxiety drives achievement in some children — they study compulsively, avoid anything they might fail at, and achieve highly. Adults see the grades and assume they're fine. The internal experience of constant dread is invisible behind the results." },
           ] } },
-          { id: "kt-m22-l2-a4", type: "true_false" as any, title: "Check", content: { statement: "A child who performs well academically cannot have an anxiety disorder.", isTrue: false, explanation: "Many anxious children are high performers — their anxiety DRIVES the performance. Goff calls this 'the gifted anxious child.' They may get straight A's while suffering silently. Academic success can actually mask anxiety because adults think 'they're doing fine' when internally they're in constant distress." }},
+          { id: "kt-m22-l2-a4-v2", type: "true_false" as any, title: "Check", content: { statement: "A child who performs well academically cannot have an anxiety disorder.", isTrue: false, explanation: "Many anxious children are high performers — their anxiety DRIVES the performance. Goff calls this 'the gifted anxious child.' They may get straight A's while suffering silently. Academic success can actually mask anxiety because adults think 'they're doing fine' when internally they're in constant distress." }},
         ]
       },
       {

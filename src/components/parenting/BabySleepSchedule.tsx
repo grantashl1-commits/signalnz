@@ -20,6 +20,7 @@ export default function BabySleepSchedule({ schedules = BABY_SLEEP_SCHEDULES }: 
 
   return (
     <div className="space-y-4">
+      <p className="text-sm text-muted-foreground">These are example routines, not feeding prescriptions or sleep targets. Follow your child’s cues and individual health advice. Ask your midwife or Well Child provider about feeding, growth or sleep concerns.</p>
       {/* Week selector */}
       <div className="flex items-center justify-between bg-card border border-border rounded-2xl p-4">
         <button
@@ -35,7 +36,7 @@ export default function BabySleepSchedule({ schedules = BABY_SLEEP_SCHEDULES }: 
         </div>
         <button
           onClick={() => setWeekIdx(Math.min(schedules.length - 1, weekIdx + 1))}
-          disabled={weekIdx === BABY_SLEEP_SCHEDULES.length - 1}
+          disabled={weekIdx === schedules.length - 1}
           className="p-2 rounded-full bg-secondary disabled:opacity-30"
         >
           <ChevronRight className="h-4 w-4 text-foreground" />

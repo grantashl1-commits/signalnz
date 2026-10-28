@@ -49,7 +49,7 @@ export default function FillBlanks({ content, onComplete }: Props) {
       )}
       {submitted && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
-          <p className="font-body text-sm text-primary font-bold">✨ Beautifully expressed</p>
+          <p className="font-body text-sm text-primary font-bold">Your practice script is saved.</p><p className="text-sm text-muted-foreground mt-2">Suggested wording: {parts.map((part, i) => part + (content.blanks[i] ?? "")).join("")}</p>
         </motion.div>
       )}
     </div>

@@ -9,7 +9,7 @@ interface Props {
 
 const SCALE_LABELS = ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"];
 
-export default function SurveyActivity({ content, onComplete }: Props) {
+function RatingSurvey({ content, onComplete }: Props) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const allDone = Object.keys(answers).length === content.questions.length;
@@ -48,4 +48,17 @@ export default function SurveyActivity({ content, onComplete }: Props) {
       )}
     </div>
   );
+}
+
+interface ChoiceSurveyProps { content: { question: string; options: string[] }; onComplete: (response: unknown) => void }
+function ChoiceSurvey({ content, onComplete }: ChoiceSurveyProps) {
+  const [selected, setSelected] = useState<number | null>(null);
+  const [saved, setSaved] = useState(false);
+  return <div className="space-y-3"><p>{content.question}</p>
+    {content.options.map((option, i) => <button key={option} aria-pressed={selected === i} disabled={saved} className={`block w-full text-left p-4 rounded-xl border ${selected === i ? 'border-primary bg-primary/10' : 'border-border'}`} onClick={() => setSelected(i)}>{option}</button>)}
+    {!saved ? <button disabled={selected === null} className="min-h-[44px] px-4 rounded-xl bg-primary text-primary-foreground disabled:opacity-40" onClick={() => { if (selected !== null) { onComplete({ selectedIndex: selected, selectedOption: content.options[selected] }); setSaved(true); } }}>Save response</button> : <p role="status">Response recorded</p>}
+  </div>;
+}
+export default function SurveyActivity(props: Props | ChoiceSurveyProps) {
+  return 'options' in props.content ? <ChoiceSurvey {...props as ChoiceSurveyProps} /> : <RatingSurvey {...props as Props} />;
 }

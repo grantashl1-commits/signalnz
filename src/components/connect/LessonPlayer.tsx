@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Lightbulb, Clock, BookOpen } from "lucide-react";
 import type { CourseLesson } from "@/data/signal-couples-course";
@@ -11,18 +11,21 @@ interface Props {
   lesson: CourseLesson;
   onComplete: (lessonId: string) => void;
   onBack: () => void;
-  onSaveProgress: (activityId: string, response: any, saveToVault: boolean) => void;
+  onSaveProgress: (activityId: string, response: any, saveToVault: boolean) => void | Promise<void>;
+  responses?: Record<string, any>;
+  initialActivityId?: string;
   /** Activities already completed (from saved progress) so reopening a lesson resumes. */
   initialCompleted?: Set<string>;
 }
 
-export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgress, initialCompleted }: Props) {
+export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgress, initialCompleted, responses, initialActivityId }: Props) {
   const [completed, setCompleted] = useState<Set<string>>(
     () => new Set(lesson.activities.filter((a) => initialCompleted?.has(a.id)).map((a) => a.id)),
   );
   // Resume at the first unfinished activity.
   const [activityIdx, setActivityIdx] = useState(() => {
-    const i = lesson.activities.findIndex((a) => !initialCompleted?.has(a.id));
+    const chosen = lesson.activities.findIndex(a => a.id === initialActivityId);
+    const i = chosen >= 0 ? chosen : lesson.activities.findIndex((a) => !initialCompleted?.has(a.id));
     return i === -1 ? 0 : i;
   });
   const [showMilestone, setShowMilestone] = useState(false);
@@ -31,10 +34,16 @@ export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgres
   const totalActivities = lesson.activities.length;
   const allDone = completed.size === totalActivities;
 
-  const handleActivityComplete = (activityId: string, response: any) => {
-    setCompleted(prev => new Set(prev).add(activityId));
-    const act = lesson.activities.find(a => a.id === activityId);
-    onSaveProgress(activityId, response, act?.saveToVault || false);
+  useEffect(() => {
+    setCompleted(prev => new Set([...prev, ...lesson.activities.filter(a => initialCompleted?.has(a.id)).map(a => a.id)]));
+  }, [initialCompleted, lesson]);
+  const [saveError, setSaveError] = useState(false);
+  const handleActivityComplete = async (activityId: string, response: any) => {
+    try {
+      const act = lesson.activities.find(a => a.id === activityId);
+      await onSaveProgress(activityId, response, act?.saveToVault || act?.content?.saveToVault || false);
+      setCompleted(prev => new Set(prev).add(activityId)); setSaveError(false); return true;
+    } catch { setSaveError(true); toast.error('Could not save your work. Please try again.'); return false; }
   };
 
   const next = () => {
@@ -78,7 +87,7 @@ export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgres
             <h2 className="font-display text-base font-bold text-foreground leading-tight">{lesson.title}</h2>
             <div className="flex items-center gap-3 mt-0.5">
               <span className="font-body text-[10px] text-muted-foreground flex items-center gap-1">
-                <Clock className="h-3 w-3" /> ~{lesson.estimatedMinutes} min
+                <Clock className="h-3 w-3" /> ~{lesson.estimatedMinutes ?? Math.max(3, lesson.activities.length * 2)} min
               </span>
               <span className="font-body text-[10px] text-muted-foreground flex items-center gap-1">
                 <BookOpen className="h-3 w-3" /> {totalActivities} activities
@@ -95,6 +104,7 @@ export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgres
             return (
               <button
                 key={act.id}
+                aria-label={`Activity ${i + 1}: ${act.title}`}
                 onClick={() => { haptic("light"); setActivityIdx(i); }}
                 className="transition-all"
               >
@@ -139,7 +149,8 @@ export default function LessonPlayer({ lesson, onComplete, onBack, onSaveProgres
               <p className="font-body text-sm text-muted-foreground leading-relaxed">{activity.instruction}</p>
             </div>
 
-            <ActivityRenderer activity={activity} onComplete={handleActivityComplete} />
+            <ActivityRenderer activity={activity} initialResponse={responses?.[activity.id]} onComplete={handleActivityComplete} />
+            {saveError && <p role="alert" className="text-sm text-destructive">This activity has not been saved. Reopen it and try again.</p>}
 
             {/* Tip */}
             {activity.tip && (

@@ -1,0 +1,298 @@
+{
+  "rendered": 443,
+  "failures": [
+    {
+      "lesson": "baby-m1-l1",
+      "title": "How Baby Sleep Works",
+      "activity": "b-m1-l1-a3",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "baby-m5-l1",
+      "title": "When & How to Start",
+      "activity": "b-m5-l1-a3",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "baby-m3-l1",
+      "title": "The Spectrum of Sleep Methods",
+      "activity": "b-m3-l1-a2",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "toddler-m1-l1",
+      "title": "The Upstairs & Downstairs Brain",
+      "activity": "t-m1-l1-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "toddler-m2-l1",
+      "title": "Meltdown vs. Manipulation",
+      "activity": "t-m2-l1-a2",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "toddler-m2-l2",
+      "title": "The ACE Method",
+      "activity": "t-m2-l2-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "toddler-m3-l2",
+      "title": "Natural & Logical Consequences",
+      "activity": "t-m3-l2-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "toddler-m4-l2",
+      "title": "Night Wakings & Fears",
+      "activity": "t-m4-l2-a2",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "toddler-m5-l2",
+      "title": "Managing Picky Eating",
+      "activity": "t-m5-l2-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "toddler-m6-l2",
+      "title": "PREP in Action",
+      "activity": "t-m6-l2-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "toddler-m8-l1",
+      "title": "Breathing & Physical Release",
+      "activity": "t-m8-l1-a4",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "kt-m1-l2",
+      "title": "Growth Mindset in Practice",
+      "activity": "kt-m1-l2-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m2-l2",
+      "title": "Response Strategies",
+      "activity": "kt-m2-l2-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m3-l3",
+      "title": "Raising Worry-Free Girls",
+      "activity": "kt-m3-l3-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m5-l1",
+      "title": "The Teenage Brain Explained",
+      "activity": "kt-m5-l1-a3",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m7-l1",
+      "title": "A Friend Says They Don’t Want to Play",
+      "activity": "kt-m7-l1-a3",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m7-l6",
+      "title": "Sibling Conflict",
+      "activity": "kt-m7-l6-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m8-l3",
+      "title": "Academic Pressure & Homework Battles",
+      "activity": "kt-m8-l3-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m8-l6",
+      "title": "Boredom & Independent Play",
+      "activity": "kt-m8-l6-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m14-l1",
+      "title": "Motivation vs Pressure",
+      "activity": "kt-m14-l1-a3",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m15-l3",
+      "title": "Being a Good Friend",
+      "activity": "kt-m15-l3-a4",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "kt-m17-l2",
+      "title": "Conquering Their Personal Challenge",
+      "activity": "kt-m17-l2-a4",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "kt-m18-l2",
+      "title": "Breaking Generational Patterns",
+      "activity": "kt-m18-l2-a4",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "kt-m19-l1",
+      "title": "Why Punishment Doesn't Work",
+      "activity": "kt-m19-l1-a3",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m20-l1",
+      "title": "The Art of Listening",
+      "activity": "kt-m20-l1-a3",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-m21-l1",
+      "title": "Why Teens Disengage",
+      "activity": "kt-m21-l1-a4",
+      "type": "survey",
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "lesson": "kt-shame-l1",
+      "title": "What Shame Actually Is",
+      "activity": "kt-shame-l1-a3",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    },
+    {
+      "lesson": "kt-shame-l3",
+      "title": "Vulnerability as a Parenting Practice",
+      "activity": "kt-shame-l3-a2",
+      "type": "single_choice",
+      "error": "Objects are not valid as a React child (found: object with keys {label, isCorrect}). If you meant to render a collection of children, use an array instead."
+    }
+  ],
+  "schemaIssues": [
+    {
+      "activity": "b-m1-l2-a3",
+      "lesson": "baby-m1-l2",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "b-m4-l1-a3",
+      "lesson": "baby-m4-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "b-m5-l3-a2",
+      "lesson": "baby-m5-l3",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "b-m6-l2-a2",
+      "lesson": "baby-m6-l2",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "b-m7-l1-a3",
+      "lesson": "baby-m7-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "t-m1-l2-a2",
+      "lesson": "toddler-m1-l2",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "t-m3-l1-a3",
+      "lesson": "toddler-m3-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "t-m4-l3-a2",
+      "lesson": "toddler-m4-l3",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "t-m9-l2-a2",
+      "lesson": "toddler-m9-l2",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "t-m10-l2-a4",
+      "lesson": "toddler-m10-l2",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "t-m13-l1-a4",
+      "lesson": "toddler-m13-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-m3-l1-a3",
+      "lesson": "kt-m3-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-m5-l3-a2",
+      "lesson": "kt-m5-l3",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-m8-l5-a2",
+      "lesson": "kt-m8-l5",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-m9-l1-a3",
+      "lesson": "kt-m9-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-m9-l6-a2",
+      "lesson": "kt-m9-l6",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-m16-l1-a3",
+      "lesson": "kt-m16-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-belong-l1-a4",
+      "lesson": "kt-belong-l1",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    },
+    {
+      "activity": "kt-m22-l2-a4",
+      "lesson": "kt-m22-l2",
+      "issue": "isTrue is not consumed; either answer is labelled correct"
+    }
+  ]
+}

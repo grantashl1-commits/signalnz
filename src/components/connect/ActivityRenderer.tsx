@@ -30,10 +30,11 @@ const Loader = () => (
 
 interface Props {
   activity: CourseActivity;
-  onComplete: (activityId: string, response: any) => void;
+  onComplete: (activityId: string, response: any) => void | Promise<boolean>;
+  initialResponse?: any;
 }
 
-export default function ActivityRenderer({ activity, onComplete }: Props) {
+export default function ActivityRenderer({ activity, onComplete, initialResponse }: Props) {
   const handle = (response: any) => onComplete(activity.id, response);
   const [quizOpen, setQuizOpen] = useState(false);
 
@@ -74,7 +75,7 @@ export default function ActivityRenderer({ activity, onComplete }: Props) {
           case "true_false": return <TrueFalse content={activity.content} onComplete={handle} />;
           case "sort": return <SortActivity content={activity.content} onComplete={handle} />;
           case "fill_blanks": return <FillBlanks content={activity.content} onComplete={handle} />;
-          case "open_response": return <OpenResponse content={activity.content} onComplete={handle} />;
+          case "open_response": return <OpenResponse activityId={activity.id} initialResponse={initialResponse} content={activity.content} onComplete={handle} />;
           case "short_answer": return <ShortAnswer content={activity.content} onComplete={handle} />;
           case "carousel":
           case "info_carousel": return <CarouselActivity content={{ cards: activity.content?.slides?.map((s: any) => ({ title: s.heading, body: s.body })) || activity.content?.cards || [] }} onComplete={handle} />;
